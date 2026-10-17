@@ -1,0 +1,580 @@
+openapi: 3.0.3
+info:
+  title: Restaurant Order API
+  description: |
+    API сервиса заказов автоматизированного ресторана быстрого питания.
+    Покрывает сценарии UC-8, UC-9, UC-10, UC-11, UC-12.
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: https://api.restaurant.example.com/api/v1
+    description: Production
+  - url: https://api-dev.restaurant.example.com/api/v1
+    description: Development
+
+tags:
+  - name: Заказы
+    description: Оформление, статус, история и повторение заказов
+  - name: Отзывы
+    description: Отзывы о заказанных блюдах
+
+paths:
+  /orders:
+    post:
+      tags:
+        - Заказы
+      summary: Оформление заказа
+      description: |
+        UC-8. Создаёт заказ по корзине, проверяет остатки, проводит оплату
+        и при успехе возвращает номер заказа для отслеживания.
+      operationId: createOrder
+      security:
+        - bearerAuth: []
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+            example:
+              items:
+                - menuItemId: 101
+                  quantity: 1
+                - menuItemId: 205
+                  quantity: 2
+              fulfillmentType: dine_in
+              paymentMethod: card
+              phone: "+79001234567"
+      responses:
+        '201':
+          description: Заказ успешно оформлен и оплачен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreated'
+        '400':
+          description: Невалидные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '402':
+          description: Оплата не прошла
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '409':
+          description: Одно или несколько блюд недоступны
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Ошибка программы лояльности
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedErrorMessage'
+
+    get:
+      tags:
+        - Заказы
+      summary: Просмотр истории заказов
+      description: |
+        UC-11. Возвращает список заказов текущего клиента
+        с постраничной навигацией, отсортированных по дате (новые первыми).
+      operationId: getOrderHistory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - name: status
+          in: query
+          description: Фильтр по статусу заказа
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Список заказов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+        '401':
+          description: Требуется авторизация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedErrorMessage'
+
+  /orders/{orderId}:
+    get:
+      tags:
+        - Заказы
+      summary: Просмотр статуса заказа
+      description: |
+        UC-9. Возвращает текущий статус заказа и состав позиций.
+        Клиент использует для отслеживания готовности на табло / в приложении.
+      operationId: getOrderStatus
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - $ref: '#/components/parameters/orderIdParam'
+      responses:
+        '200':
+          description: Данные заказа и текущий статус
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Заказ не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedErrorMessage'
+
+  /orders/{orderId}/items/{itemId}/reviews:
+    post:
+      tags:
+        - Отзывы
+      summary: Добавление отзыва о заказанном блюде
+      description: |
+        UC-10. Клиент оставляет отзыв и оценку по конкретной позиции
+        завершённого заказа. Доступно только для заказов в статусе `completed`.
+      operationId: createOrderItemReview
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderIdParam'
+        - name: itemId
+          in: path
+          description: Идентификатор позиции в заказе
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReviewRequest'
+            example:
+              rating: 5
+              text: "Отличный бургер, всё как на картинке"
+      responses:
+        '201':
+          description: Отзыв создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        '400':
+          description: Невалидные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '403':
+          description: Заказ ещё не завершён или не принадлежит клиенту
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Заказ или позиция не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '409':
+          description: Отзыв по этой позиции уже оставлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedErrorMessage'
+
+  /orders/{orderId}/repeat:
+    post:
+      tags:
+        - Заказы
+      summary: Повторение заказа
+      description: |
+        UC-12. Создаёт новый заказ на основе ранее оформленного.
+        Система проверяет актуальность меню и доступность блюд.
+      operationId: repeatOrder
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/orderIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepeatOrderRequest'
+      responses:
+        '201':
+          description: Новый заказ создан на основе предыдущего
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreated'
+        '404':
+          description: Исходный заказ не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '409':
+          description: Некоторые блюда из заказа больше недоступны
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepeatOrderConflict'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtendedErrorMessage'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Токен авторизованного клиента
+
+  parameters:
+    orderIdParam:
+      name: orderId
+      in: path
+      description: Уникальный идентификатор заказа
+      required: true
+      schema:
+        type: string
+        format: uuid
+    offsetParam:
+      name: offset
+      in: query
+      description: Смещение для постраничной навигации
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    limitParam:
+      name: limit
+      in: query
+      description: Количество элементов на странице
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+
+  schemas:
+    OrderStatus:
+      type: string
+      description: Статус жизненного цикла заказа
+      enum:
+        - created
+        - awaiting_payment
+        - paid
+        - preparing
+        - ready
+        - completed
+        - cancelled
+
+    FulfillmentType:
+      type: string
+      enum:
+        - dine_in
+        - takeaway
+
+    PaymentMethod:
+      type: string
+      enum:
+        - card
+        - cash
+        - bonus
+
+    OrderItemInput:
+      type: object
+      required:
+        - menuItemId
+        - quantity
+      properties:
+        menuItemId:
+          type: integer
+          minimum: 1
+          description: ID блюда в меню
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 99
+          description: Количество
+
+    LoyaltyInput:
+      type: object
+      properties:
+        bonusPointsToSpend:
+          type: integer
+          minimum: 0
+          description: Количество бонусов к списанию
+        confirmationCode:
+          type: string
+          pattern: ^[0-9]{4,6}$
+          description: Код подтверждения из SMS
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - items
+        - fulfillmentType
+        - paymentMethod
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/OrderItemInput'
+        fulfillmentType:
+          $ref: '#/components/schemas/FulfillmentType'
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
+        phone:
+          type: string
+          pattern: ^\+[0-9]{11,15}$
+          description: Телефон клиента (E.164)
+        loyalty:
+          $ref: '#/components/schemas/LoyaltyInput'
+
+    RepeatOrderRequest:
+      type: object
+      required:
+        - fulfillmentType
+        - paymentMethod
+      properties:
+        fulfillmentType:
+          $ref: '#/components/schemas/FulfillmentType'
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
+        phone:
+          type: string
+          pattern: ^\+[0-9]{11,15}$
+
+    OrderItem:
+      type: object
+      required:
+        - itemId
+        - menuItemId
+        - name
+        - quantity
+        - price
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        menuItemId:
+          type: integer
+        name:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+          format: float
+          description: Цена за единицу
+
+    Order:
+      type: object
+      required:
+        - orderId
+        - orderNumber
+        - status
+        - totalAmount
+        - currency
+        - fulfillmentType
+        - createdAt
+        - items
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        orderNumber:
+          type: integer
+          description: Номер для табло и талона
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        totalAmount:
+          type: number
+          format: float
+        currency:
+          type: string
+          example: RUB
+        fulfillmentType:
+          $ref: '#/components/schemas/FulfillmentType'
+        createdAt:
+          type: string
+          format: date-time
+        estimatedReadyAt:
+          type: string
+          format: date-time
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    OrderCreated:
+      allOf:
+        - $ref: '#/components/schemas/Order'
+        - type: object
+          description: Ответ при успешном оформлении заказа (UC-8, UC-12)
+
+    OrderListResponse:
+      type: object
+      required:
+        - items
+        - total
+        - offset
+        - limit
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        total:
+          type: integer
+          description: Общее количество заказов клиента
+        offset:
+          type: integer
+        limit:
+          type: integer
+
+    CreateReviewRequest:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: Оценка блюда
+        text:
+          type: string
+          maxLength: 1000
+          description: Текст отзыва
+
+    Review:
+      type: object
+      required:
+        - reviewId
+        - orderId
+        - itemId
+        - rating
+        - createdAt
+      properties:
+        reviewId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        itemId:
+          type: string
+          format: uuid
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        text:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    RepeatOrderConflict:
+      type: object
+      required:
+        - error
+        - description
+        - unavailableItems
+      properties:
+        error:
+          type: string
+          example: items_unavailable
+        description:
+          type: string
+        unavailableItems:
+          type: array
+          items:
+            type: object
+            properties:
+              menuItemId:
+                type: integer
+              name:
+                type: string
+
+    ErrorMessage:
+      type: object
+      required:
+        - error
+        - description
+      properties:
+        error:
+          type: string
+          description: Код ошибки
+        description:
+          type: string
+          description: Описание для пользователя
+
+    ExtendedErrorMessage:
+      allOf:
+        - $ref: '#/components/schemas/ErrorMessage'
+        - type: object
+          required:
+            - traceId
+          properties:
+            traceId:
+              type: string
+              format: uuid
+            techInfo:
+              type: string

@@ -1,0 +1,161 @@
+<mxfile host="65bd71144e">
+    <diagram name="Use Case — Ресторан" id="uc-restaurant-final">
+        <mxGraphModel dx="2628" dy="737" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="sys-boundary" value="Система самообслуживания ресторана" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;fillColor=none;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="30" width="1030" height="720" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-guest" value="Гость ресторана" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="120" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-payment" value="Платёжная система" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="630" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-floor" value="Менеджер зала" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="384" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-assort" value="Менеджер по ассортименту" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="1250" y="255" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-order" value="Оформить заказ" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="210" y="115" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-pickup" value="Отследить готовность&#xa;заказа" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="210" y="260" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-cancel" value="Отменить заказ" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="374" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-menu" value="Ознакомиться с меню" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="70" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-form" value="Сформировать заказ" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="150" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-pay" value="Произвести оплату" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="560" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-auth" value="Авторизоваться" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="610" y="250" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-reg" value="Зарегистрироваться" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="340" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-refund-card" value="Возврат денег&#xa;(оплата картой)" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="520" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-refund-cash" value="Возврат денег&#xa;(оплата наличными)" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="480" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-menu-setup" value="Настроить состав меню" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="250" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-tech-card" value="Настроить технологическую карту" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="950" y="80" width="170" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-add-items" value="Внести информацию&#xa;по позициям в меню" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="390" width="150" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-change-price" value="Изменить цену&#xa;на позиции" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="880" y="450" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uc-promo" value="Внести информацию&#xa;по акциям" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="400" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="link-guest-order" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-guest" target="uc-order" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="link-guest-pickup" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-guest" target="uc-pickup" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="link-floor-cancel" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-floor" target="uc-cancel" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="link-pay-sys-pay" style="endArrow=none;html=1;rounded=0;dashed=1;" parent="1" source="actor-payment" target="uc-pay" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="link-pay-sys-refund-card" style="endArrow=none;html=1;rounded=0;dashed=1;" parent="1" source="actor-payment" target="uc-refund-card" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="link-assort-menu" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-assort" target="uc-menu-setup" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="link-assort-tech" style="endArrow=none;html=1;rounded=0;" parent="1" source="actor-assort" target="uc-tech-card" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-order-menu" style="endArrow=open;html=1;rounded=0;dashed=0;" parent="1" source="uc-order" target="uc-menu" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-order-menu-lbl" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="inc-order-menu" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="inc-order-form" style="endArrow=open;html=1;rounded=0;" parent="1" source="uc-order" target="uc-form" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-order-form-lbl" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="inc-order-form" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="inc-order-pay" style="endArrow=open;html=1;rounded=0;" parent="1" source="uc-order" target="uc-pay" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-order-pay-lbl" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="inc-order-pay" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="ext-auth-order" style="endArrow=open;html=1;rounded=0;dashed=1;" parent="1" source="uc-auth" target="uc-order" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ext-auth-order-lbl" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="ext-auth-order" connectable="0" vertex="1">
+                    <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="ext-reg-order" style="endArrow=open;html=1;rounded=0;dashed=1;" parent="1" source="uc-reg" target="uc-order" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ext-reg-order-lbl" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="ext-reg-order" connectable="0" vertex="1">
+                    <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="gen-refund-card-cancel" style="endArrow=block;endFill=0;html=1;rounded=0;" parent="1" source="uc-refund-card" target="uc-cancel" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gen-refund-cash-cancel" style="endArrow=block;endFill=0;html=1;rounded=0;" parent="1" source="uc-refund-cash" target="uc-cancel" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-menu-items" style="endArrow=open;html=1;rounded=0;" parent="1" source="uc-menu-setup" target="uc-add-items" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-menu-items-lbl" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="inc-menu-items" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="inc-menu-price" style="endArrow=open;html=1;rounded=0;" parent="1" source="uc-menu-setup" target="uc-change-price" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-menu-price-lbl" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="inc-menu-price" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="inc-menu-promo" style="endArrow=open;html=1;rounded=0;" parent="1" source="uc-menu-setup" target="uc-promo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="inc-menu-promo-lbl" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;" parent="inc-menu-promo" connectable="0" vertex="1">
+                    <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
