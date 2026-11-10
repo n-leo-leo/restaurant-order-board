@@ -1,5 +1,6 @@
 site_name: "Робот и точка: приложение для заказа + табло"
 site_description: Проектная работа курса «Системный аналитик»
+site_url: https://n-leo-leo.github.io/restaurant-order-board/
 docs_dir: docs/project/documentation
 site_dir: site
 
