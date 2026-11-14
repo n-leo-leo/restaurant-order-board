@@ -1,8 +1,12 @@
 site_name: "Рабочая документация — Робот и точка"
 site_description: Проектная работа курса «Системный аналитик»
 site_url: https://n-leo-leo.github.io/restaurant-order-board/
-docs_dir: docs/project/documentation
+docs_dir: docs/project
 site_dir: site-draft
+
+# Public landing links to homework generated only by the public build hook.
+exclude_docs: |
+  /published/index.md
 
 theme:
   name: material
@@ -27,39 +31,50 @@ markdown_extensions:
   - attr_list
 
 nav:
-  - О проекте: index.md
-  - Решения и допущения: decisions.md
+  - Рабочее пространство: index.md
+  - Этапы подготовки: published/stages.md
+  - Журнал решений: documentation/decisions.md
   - 1. Бизнес-требования:
-      - Цели и требования бизнеса: 01_business/goals.md
-      - Метрики: 01_business/metrics.md
-      - Бизнес-процессы: 01_business/processes.md
-      - Роли и границы системы: 01_business/scope.md
+      - Цели и требования бизнеса: published/01_business/goals.md
+      - Метрики: published/01_business/metrics.md
+      - Бизнес-процессы: published/01_business/processes.md
+      - Роли и границы системы: published/01_business/scope.md
   - 2. Требования к приложению:
-      - Карта историй: 02_requirements/story-map.md
-      - Пользовательские истории: 02_requirements/user-stories.md
-      - НФТ: 02_requirements/nfr.md
-      - Допущения этапа 1: 02_requirements/assumptions.md
-      - Диаграмма Use Case: 02_requirements/use-case.md
+      - Карта историй: published/02_requirements/story-map.md
+      - Пользовательские истории: published/02_requirements/user-stories.md
+      - НФТ: published/02_requirements/nfr.md
+      - Допущения этапа 1: published/02_requirements/assumptions.md
+      - Диаграмма Use Case: documentation/02_requirements/use-case.md
   - 3. Информационная модель:
-      - Диаграмма классов: 03_model/class-diagram.md
-      - Описание сущностей: 03_model/entities.md
-      - Статусы заказа: 03_model/order-states.md
+      - Диаграмма классов: documentation/03_model/class-diagram.md
+      - Описание сущностей: documentation/03_model/entities.md
+      - Статусы заказа: documentation/03_model/order-states.md
   - 4. Архитектура:
-      - Архитектурный стиль: 04_architecture/style.md
-      - Компоненты: 04_architecture/components.md
-      - Перечень интеграций: 04_architecture/integrations.md
-      - Схемы интеграций: 04_architecture/integration-flows.md
-      - Нагрузка и выбор СУБД: 04_architecture/load-db.md
+      - Архитектурный стиль: documentation/04_architecture/style.md
+      - Компоненты: documentation/04_architecture/components.md
+      - Перечень интеграций: documentation/04_architecture/integrations.md
+      - Схемы интеграций: documentation/04_architecture/integration-flows.md
+      - Нагрузка и выбор СУБД: documentation/04_architecture/load-db.md
   - 5. API и UI:
-      - Ресурсы и эндпоинты: 05_api/resources.md
-      - OpenAPI: 05_api/openapi.md
-      - UI и взаимодействие с API: 05_api/ui.md
+      - Ресурсы и эндпоинты: documentation/05_api/resources.md
+      - OpenAPI: documentation/05_api/openapi.md
+      - UI и взаимодействие с API: documentation/05_api/ui.md
   - 6. Декомпозиция:
-      - DoR и DoD: 06_decomposition/dor-dod.md
-      - Критерии приемки: 06_decomposition/acceptance-criteria.md
-      - Задачи: 06_decomposition/tasks.md
+      - DoR и DoD: documentation/06_decomposition/dor-dod.md
+      - Критерии приемки: documentation/06_decomposition/acceptance-criteria.md
+      - Задачи: documentation/06_decomposition/tasks.md
   - 7. Тестирование:
-      - Тест-кейсы MVP: 07_testing/test-cases-mvp.md
-      - Тест-кейсы первого релиза: 07_testing/test-cases-r1.md
-      - Чек-лист: 07_testing/checklist.md
-  - 8. Трассировка: 08_traceability.md
+      - Тест-кейсы MVP: documentation/07_testing/test-cases-mvp.md
+      - Тест-кейсы первого релиза: documentation/07_testing/test-cases-r1.md
+      - Чек-лист: documentation/07_testing/checklist.md
+  - 8. Трассировка: documentation/08_traceability.md
+  - Рабочие заметки:
+      - "00 Описание ДЗ": "00_Описание_ДЗ.md"
+      - "01 План проектной работы": "01_План_проектной_работы.md"
+      - "02 Практика незабранных заказов": "02_Практика_незабранных_заказов.md"
+      - "03 Проверка решений этапа 1": "03_Проверка_решений_этапа_1.md"
+      - "04 Вопросы преподавателю этап 1": "04_Вопросы_преподавателю_этап_1.md"
+      - "05 Результат самостоятельной подготовки": "05_Результат_самостоятельной_подготовки.md"
+      - "06 Ответ преподавателя и решения": "06_Ответ_преподавателя_и_решения.md"
+      - "07 Финальная проверка этапа 1": "07_Финальная_проверка_этапа_1.md"
+      - "09 Исходная схема оформления": "09_Исходная_схема_оформления.md"
