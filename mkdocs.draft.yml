@@ -33,6 +33,7 @@ markdown_extensions:
 nav:
   - Рабочее пространство: index.md
   - Этапы подготовки: published/stages.md
+  - Глоссарий: published/glossary.md
   - Журнал решений: documentation/decisions.md
   - 1. Бизнес-требования:
       - Цели и требования бизнеса: published/01_business/goals.md
