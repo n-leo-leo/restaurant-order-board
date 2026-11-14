@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='utf-8'?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="bpmn-availability_defs" targetNamespace="https://restaurant.example/analysis">
+  <bpmn:process id="bpmn-availability" name="Доступность блюд и пополнение" isExecutable="false">
+    <bpmn:documentation>Аналитическая схема. Роль указана в названии задачи; дорожки не выделены. Правила A-xx применяются в границах проектных допущений. Это не исполняемая интеграционная модель.</bpmn:documentation>
+    <bpmn:startEvent id="s_start" name="Изменение остатков или срока годности">
+      <bpmn:outgoing>Flow_bpmn-availability_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="s_update" name="Склад: обновить данные об ингредиентах">
+      <bpmn:incoming>Flow_bpmn-availability_0</bpmn:incoming>
+      <bpmn:incoming>Flow_bpmn-availability_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="s_check" name="Блюдо доступно?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_bpmn-availability_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bpmn-availability_3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="s_show" name="Приложение: показать доступное блюдо">
+      <bpmn:incoming>Flow_bpmn-availability_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="s_hide" name="Приложение: скрыть недоступное блюдо">
+      <bpmn:incoming>Flow_bpmn-availability_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="s_merge" name="" gatewayDirection="Converging">
+      <bpmn:incoming>Flow_bpmn-availability_4</bpmn:incoming>
+      <bpmn:incoming>Flow_bpmn-availability_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="s_low" name="Остаток ниже 30%?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_bpmn-availability_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bpmn-availability_8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="s_notify" name="Склад/роботы: уведомить сотрудника о пополнении">
+      <bpmn:incoming>Flow_bpmn-availability_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_9</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="s_load" name="Сотрудник: загрузить ингредиенты">
+      <bpmn:incoming>Flow_bpmn-availability_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_10</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="s_end" name="Доступность актуализирована">
+      <bpmn:incoming>Flow_bpmn-availability_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_0" sourceRef="s_start" targetRef="s_update" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_1" sourceRef="s_update" targetRef="s_check" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_2" sourceRef="s_check" targetRef="s_show" name="Да" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_3" sourceRef="s_check" targetRef="s_hide" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_4" sourceRef="s_show" targetRef="s_merge" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_5" sourceRef="s_hide" targetRef="s_merge" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_6" sourceRef="s_merge" targetRef="s_low" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_7" sourceRef="s_low" targetRef="s_end" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_8" sourceRef="s_low" targetRef="s_notify" name="Да" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_9" sourceRef="s_notify" targetRef="s_load" />
+    <bpmn:sequenceFlow id="Flow_bpmn-availability_10" sourceRef="s_load" targetRef="s_update" name="Обновить остатки" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="bpmn-availability_diagram">
+    <bpmndi:BPMNPlane id="bpmn-availability_plane" bpmnElement="bpmn-availability">
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_0" bpmnElement="Flow_bpmn-availability_0">
+        <di:waypoint x="260.0" y="144" />
+        <di:waypoint x="260.0" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_1" bpmnElement="Flow_bpmn-availability_1">
+        <di:waypoint x="260.0" y="316" />
+        <di:waypoint x="260.0" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_2" bpmnElement="Flow_bpmn-availability_2">
+        <di:waypoint x="260.0" y="494" />
+        <di:waypoint x="260.0" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="268.0" y="503" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_3" bpmnElement="Flow_bpmn-availability_3">
+        <di:waypoint x="292" y="462" />
+        <di:waypoint x="780" y="462" />
+        <di:waypoint x="780" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="300" y="471" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_4" bpmnElement="Flow_bpmn-availability_4">
+        <di:waypoint x="260" y="696" />
+        <di:waypoint x="260" y="852" />
+        <di:waypoint x="488" y="852" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_5" bpmnElement="Flow_bpmn-availability_5">
+        <di:waypoint x="780" y="696" />
+        <di:waypoint x="780" y="852" />
+        <di:waypoint x="552" y="852" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_6" bpmnElement="Flow_bpmn-availability_6">
+        <di:waypoint x="520.0" y="884" />
+        <di:waypoint x="520.0" y="1010" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_7" bpmnElement="Flow_bpmn-availability_7">
+        <di:waypoint x="488" y="1042" />
+        <di:waypoint x="260" y="1042" />
+        <di:waypoint x="260" y="1210" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="426" y="1051" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_8" bpmnElement="Flow_bpmn-availability_8">
+        <di:waypoint x="552" y="1042" />
+        <di:waypoint x="780" y="1042" />
+        <di:waypoint x="780" y="1200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="560" y="1051" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_9" bpmnElement="Flow_bpmn-availability_9">
+        <di:waypoint x="780.0" y="1276" />
+        <di:waypoint x="780.0" y="1390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-availability_edge_10" bpmnElement="Flow_bpmn-availability_10">
+        <di:waypoint x="910" y="1428" />
+        <di:waypoint x="1110" y="1428" />
+        <di:waypoint x="1110" y="278" />
+        <di:waypoint x="390" y="278" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="918" y="1437" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_start" bpmnElement="s_start">
+        <dc:Bounds x="238" y="100" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="146" y="149" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_update" bpmnElement="s_update">
+        <dc:Bounds x="130" y="240" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_check" bpmnElement="s_check">
+        <dc:Bounds x="228" y="430" width="64" height="64" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="386" width="210" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_show" bpmnElement="s_show">
+        <dc:Bounds x="130" y="620" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_hide" bpmnElement="s_hide">
+        <dc:Bounds x="650" y="620" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_merge" bpmnElement="s_merge">
+        <dc:Bounds x="488" y="820" width="64" height="64" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="418" y="776" width="210" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_low" bpmnElement="s_low">
+        <dc:Bounds x="488" y="1010" width="64" height="64" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="418" y="966" width="210" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_notify" bpmnElement="s_notify">
+        <dc:Bounds x="650" y="1200" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_load" bpmnElement="s_load">
+        <dc:Bounds x="650" y="1390" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-availability_shape_s_end" bpmnElement="s_end">
+        <dc:Bounds x="238" y="1210" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="146" y="1259" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

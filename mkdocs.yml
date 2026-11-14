@@ -29,3 +29,13 @@ markdown_extensions:
 nav:
   - О проекте: index.md
   - Этапы подготовки: stages.md
+  - 1. Бизнес-требования:
+      - Цели и требования бизнеса: 01_business/goals.md
+      - Метрики: 01_business/metrics.md
+      - Роли и границы системы: 01_business/scope.md
+      - Бизнес-процессы: 01_business/processes.md
+  - 2. Требования к приложению:
+      - Карта историй: 02_requirements/story-map.md
+      - Пользовательские истории: 02_requirements/user-stories.md
+      - НФТ: 02_requirements/nfr.md
+      - Ограничения и допущения: 02_requirements/assumptions.md

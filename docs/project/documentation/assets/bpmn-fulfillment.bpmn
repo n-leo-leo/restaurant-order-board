@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="bpmn-fulfillment_defs" targetNamespace="https://restaurant.example/analysis">
   <bpmn:process id="bpmn-fulfillment" name="Приготовление и выдача заказа" isExecutable="false">
-    <bpmn:documentation>Аналитическая схема. Роль указана в названии задачи; дорожки не выделены. Условные правила A-xx требуют подтверждения. Это не исполняемая интеграционная модель.</bpmn:documentation>
+    <bpmn:documentation>Аналитическая схема. Роль указана в названии задачи; дорожки не выделены. Правила A-xx применяются в границах проектных допущений. Это не исполняемая интеграционная модель.</bpmn:documentation>
     <bpmn:startEvent id="p_start" name="Заказ оплачен">
       <bpmn:outgoing>Flow_bpmn-fulfillment_0</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="p_send" name="Система: передать заказ роботам; показать «Готовится»">
+    <bpmn:task id="p_send" name="Система: передать заказ; после приема показать «Готовится»">
       <bpmn:incoming>Flow_bpmn-fulfillment_0</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_1</bpmn:outgoing>
     </bpmn:task>
@@ -48,52 +48,60 @@
       <bpmn:outgoing>Flow_bpmn-fulfillment_14</bpmn:outgoing>
     </bpmn:eventBasedGateway>
     <bpmn:intermediateCatchEvent id="p_open" name="Открыта ячейка своим талоном (A-02)">
+      <bpmn:incoming>Flow_bpmn-fulfillment_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_15</bpmn:outgoing>
       <bpmn:conditionalEventDefinition id="p_open_def">
         <bpmn:condition>Открыта ячейка своим талоном (A-02)</bpmn:condition>
       </bpmn:conditionalEventDefinition>
-      <bpmn:incoming>Flow_bpmn-fulfillment_12</bpmn:incoming>
-      <bpmn:outgoing>Flow_bpmn-fulfillment_15</bpmn:outgoing>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="p_timer" name="Истекли 10 минут (A-04)">
+      <bpmn:incoming>Flow_bpmn-fulfillment_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_18</bpmn:outgoing>
       <bpmn:timerEventDefinition id="p_timer_def">
         <bpmn:timeDuration>PT10M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
-      <bpmn:incoming>Flow_bpmn-fulfillment_13</bpmn:incoming>
-      <bpmn:outgoing>Flow_bpmn-fulfillment_17</bpmn:outgoing>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="p_failure" name="Сбой выдачи">
+      <bpmn:incoming>Flow_bpmn-fulfillment_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_21</bpmn:outgoing>
       <bpmn:conditionalEventDefinition id="p_failure_def">
         <bpmn:condition>Сбой выдачи</bpmn:condition>
       </bpmn:conditionalEventDefinition>
-      <bpmn:incoming>Flow_bpmn-fulfillment_14</bpmn:incoming>
-      <bpmn:outgoing>Flow_bpmn-fulfillment_19</bpmn:outgoing>
     </bpmn:intermediateCatchEvent>
     <bpmn:task id="p_issued" name="Система: условно «Выдан», снять номер (A-02)">
       <bpmn:incoming>Flow_bpmn-fulfillment_15</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_16</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="p_clean" name="Сотрудник: убрать еду, подтвердить освобождение (A-04)">
-      <bpmn:incoming>Flow_bpmn-fulfillment_17</bpmn:incoming>
-      <bpmn:outgoing>Flow_bpmn-fulfillment_18</bpmn:outgoing>
+    <bpmn:task id="p_expirenotify" name="Система: снять номер, блокировать выдачу, уведомить сотрудника">
+      <bpmn:incoming>Flow_bpmn-fulfillment_18</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_19</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:endEvent id="p_end" name="Выдача зарегистрирована">
+    <bpmn:task id="p_clean" name="Сотрудник: убрать еду, подтвердить освобождение (A-04)">
+      <bpmn:incoming>Flow_bpmn-fulfillment_19</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_20</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="p_verify" name="Сотрудник: проверить ячейку, подтвердить освобождение">
       <bpmn:incoming>Flow_bpmn-fulfillment_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_17</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="p_end" name="Выдача и свободная ячейка зарегистрированы">
+      <bpmn:incoming>Flow_bpmn-fulfillment_17</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:endEvent id="p_expired" name="Неявка; место освобождено">
-      <bpmn:incoming>Flow_bpmn-fulfillment_18</bpmn:incoming>
+      <bpmn:incoming>Flow_bpmn-fulfillment_20</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:task id="p_problem" name="Система: «Проблема», скрыть номер, уведомить менеджера">
       <bpmn:incoming>Flow_bpmn-fulfillment_7</bpmn:incoming>
       <bpmn:incoming>Flow_bpmn-fulfillment_10</bpmn:incoming>
-      <bpmn:incoming>Flow_bpmn-fulfillment_19</bpmn:incoming>
-      <bpmn:outgoing>Flow_bpmn-fulfillment_20</bpmn:outgoing>
+      <bpmn:incoming>Flow_bpmn-fulfillment_21</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_22</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="p_manager" name="Менеджер: принять заказ в ручной разбор (A-03)">
-      <bpmn:incoming>Flow_bpmn-fulfillment_20</bpmn:incoming>
-      <bpmn:outgoing>Flow_bpmn-fulfillment_21</bpmn:outgoing>
+      <bpmn:incoming>Flow_bpmn-fulfillment_22</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_23</bpmn:outgoing>
     </bpmn:task>
     <bpmn:endEvent id="p_manualend" name="Продолжение по регламенту">
-      <bpmn:incoming>Flow_bpmn-fulfillment_21</bpmn:incoming>
+      <bpmn:incoming>Flow_bpmn-fulfillment_23</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_0" sourceRef="p_start" targetRef="p_send" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_1" sourceRef="p_send" targetRef="p_cook" />
@@ -111,12 +119,14 @@
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_13" sourceRef="p_wait" targetRef="p_timer" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_14" sourceRef="p_wait" targetRef="p_failure" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_15" sourceRef="p_open" targetRef="p_issued" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_16" sourceRef="p_issued" targetRef="p_end" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_17" sourceRef="p_timer" targetRef="p_clean" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_18" sourceRef="p_clean" targetRef="p_expired" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_19" sourceRef="p_failure" targetRef="p_problem" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_20" sourceRef="p_problem" targetRef="p_manager" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_21" sourceRef="p_manager" targetRef="p_manualend" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_16" sourceRef="p_issued" targetRef="p_verify" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_17" sourceRef="p_verify" targetRef="p_end" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_18" sourceRef="p_timer" targetRef="p_expirenotify" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_19" sourceRef="p_expirenotify" targetRef="p_clean" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_20" sourceRef="p_clean" targetRef="p_expired" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_21" sourceRef="p_failure" targetRef="p_problem" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_22" sourceRef="p_problem" targetRef="p_manager" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_23" sourceRef="p_manager" targetRef="p_manualend" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="bpmn-fulfillment_diagram">
     <bpmndi:BPMNPlane id="bpmn-fulfillment_plane" bpmnElement="bpmn-fulfillment">
@@ -213,24 +223,32 @@
         <di:waypoint x="260.0" y="1930" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_17" bpmnElement="Flow_bpmn-fulfillment_17">
-        <di:waypoint x="730.0" y="1604" />
-        <di:waypoint x="730.0" y="1750" />
+        <di:waypoint x="260.0" y="2006" />
+        <di:waypoint x="260.0" y="2100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_18" bpmnElement="Flow_bpmn-fulfillment_18">
-        <di:waypoint x="730.0" y="1826" />
-        <di:waypoint x="730.0" y="1930" />
+        <di:waypoint x="730.0" y="1604" />
+        <di:waypoint x="730.0" y="1730" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_19" bpmnElement="Flow_bpmn-fulfillment_19">
+        <di:waypoint x="730.0" y="1806" />
+        <di:waypoint x="730.0" y="1900" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_20" bpmnElement="Flow_bpmn-fulfillment_20">
+        <di:waypoint x="730.0" y="1976" />
+        <di:waypoint x="730.0" y="2100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_21" bpmnElement="Flow_bpmn-fulfillment_21">
         <di:waypoint x="1222" y="1582" />
         <di:waypoint x="1420" y="1582" />
         <di:waypoint x="1420" y="1048" />
         <di:waypoint x="1330" y="1048" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_20" bpmnElement="Flow_bpmn-fulfillment_20">
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_22" bpmnElement="Flow_bpmn-fulfillment_22">
         <di:waypoint x="1200.0" y="1086" />
         <di:waypoint x="1200.0" y="1200" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_21" bpmnElement="Flow_bpmn-fulfillment_21">
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_23" bpmnElement="Flow_bpmn-fulfillment_23">
         <di:waypoint x="1200.0" y="1276" />
         <di:waypoint x="1200.0" y="1340" />
       </bpmndi:BPMNEdge>
@@ -300,19 +318,25 @@
       <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_issued" bpmnElement="p_issued">
         <dc:Bounds x="130" y="1750" width="260" height="76" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_expirenotify" bpmnElement="p_expirenotify">
+        <dc:Bounds x="600" y="1730" width="260" height="76" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_clean" bpmnElement="p_clean">
-        <dc:Bounds x="600" y="1750" width="260" height="76" />
+        <dc:Bounds x="600" y="1900" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_verify" bpmnElement="p_verify">
+        <dc:Bounds x="130" y="1930" width="260" height="76" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_end" bpmnElement="p_end">
-        <dc:Bounds x="238" y="1930" width="44" height="44" />
+        <dc:Bounds x="238" y="2100" width="44" height="44" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="146" y="1979" width="230" height="56" />
+          <dc:Bounds x="146" y="2149" width="230" height="56" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_expired" bpmnElement="p_expired">
-        <dc:Bounds x="708" y="1930" width="44" height="44" />
+        <dc:Bounds x="708" y="2100" width="44" height="44" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="616" y="1979" width="230" height="56" />
+          <dc:Bounds x="616" y="2149" width="230" height="56" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_problem" bpmnElement="p_problem">

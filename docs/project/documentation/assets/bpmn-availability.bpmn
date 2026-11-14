@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="bpmn-availability_defs" targetNamespace="https://restaurant.example/analysis">
   <bpmn:process id="bpmn-availability" name="Доступность блюд и пополнение" isExecutable="false">
-    <bpmn:documentation>Аналитическая схема. Роль указана в названии задачи; дорожки не выделены. Условные правила A-xx требуют подтверждения. Это не исполняемая интеграционная модель.</bpmn:documentation>
+    <bpmn:documentation>Аналитическая схема. Роль указана в названии задачи; дорожки не выделены. Правила A-xx применяются в границах проектных допущений. Это не исполняемая интеграционная модель.</bpmn:documentation>
     <bpmn:startEvent id="s_start" name="Изменение остатков или срока годности">
       <bpmn:outgoing>Flow_bpmn-availability_0</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="s_update" name="Склад: обновить данные об ингредиентах">
       <bpmn:incoming>Flow_bpmn-availability_0</bpmn:incoming>
-      <bpmn:outgoing>Flow_bpmn-availability_1</bpmn:outgoing>
       <bpmn:incoming>Flow_bpmn-availability_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-availability_1</bpmn:outgoing>
     </bpmn:task>
     <bpmn:exclusiveGateway id="s_check" name="Блюдо доступно?" gatewayDirection="Diverging">
       <bpmn:incoming>Flow_bpmn-availability_1</bpmn:incoming>

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="2240" viewBox="0 0 1500 2240"><defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#475569"/></marker></defs><rect width="100%" height="100%" fill="white"/>
+<text x="36" y="32" font-family="Arial" font-size="23" font-weight="bold">Приготовление и выдача заказа</text>
+<text x="36" y="58" font-family="Arial" font-size="15" fill="#475569">Аналитическая BPMN-схема · роли указаны в задачах · A-xx — проектные допущения</text>
+<polyline points="260.0,144 260.0,230" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,306 260.0,370" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,446 260.0,530" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,594 260.0,820" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="268.0" y="618" font-family="Arial" font-size="15" fill="#334155">Да</text>
+<polyline points="292,562 600,562" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="300" y="586" font-family="Arial" font-size="15" fill="#334155">Нет</text>
+<polyline points="730.0,606 730.0,720" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="698,752 520,752 520,858 390,858" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="636" y="776" font-family="Arial" font-size="15" fill="#334155">Да</text>
+<polyline points="762,752 1200,752 1200,1010" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="770" y="776" font-family="Arial" font-size="15" fill="#334155">Нет</text>
+<polyline points="260.0,896 260.0,1010" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,1074 260.0,1200" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="268.0" y="1098" font-family="Arial" font-size="15" fill="#334155">Да</text>
+<polyline points="292,1042 1070,1042" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="300" y="1066" font-family="Arial" font-size="15" fill="#334155">Нет</text>
+<polyline points="260.0,1276 260.0,1390" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,1454 260.0,1560" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="292,1422 730,1422 730,1560" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260,1454 260,1500 1200,1500 1200,1560" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,1604 260.0,1750" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,1826 260.0,1930" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,2006 260.0,2100" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="730.0,1604 730.0,1730" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="730.0,1806 730.0,1900" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="730.0,1976 730.0,2100" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="1222,1582 1420,1582 1420,1048 1330,1048" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="1200.0,1086 1200.0,1200" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="1200.0,1276 1200.0,1340" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<circle cx="260.0" cy="122.0" r="22" stroke="#0f172a" stroke-width="2" fill="white"/>
+<text x="260.0" y="165" text-anchor="middle" font-family="Arial" font-size="15">Заказ оплачен</text>
+<rect x="130" y="230" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="264.0" text-anchor="middle" font-family="Arial" font-size="15">Система: передать заказ; после</text>
+<text x="260.0" y="282.0" text-anchor="middle" font-family="Arial" font-size="15">приема показать «Готовится»</text>
+<rect x="130" y="370" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="413.0" text-anchor="middle" font-family="Arial" font-size="15">Роботы: приготовить заказ</text>
+<polygon points="260.0,530 292,562.0 260.0,594 228,562.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="569.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
+<text x="260.0" y="504" text-anchor="middle" font-family="Arial" font-size="15">Основной робот справился?</text>
+<rect x="600" y="530" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="730.0" y="564.0" text-anchor="middle" font-family="Arial" font-size="15">Роботы: передать резервному</text>
+<text x="730.0" y="582.0" text-anchor="middle" font-family="Arial" font-size="15">роботу</text>
+<polygon points="730.0,720 762,752.0 730.0,784 698,752.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
+<text x="730.0" y="759.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
+<text x="730.0" y="694" text-anchor="middle" font-family="Arial" font-size="15">Резервный робот справился?</text>
+<rect x="130" y="820" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="863.0" text-anchor="middle" font-family="Arial" font-size="15">Роботы: разместить еду в ячейке</text>
+<polygon points="260.0,1010 292,1042.0 260.0,1074 228,1042.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="1049.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
+<text x="260.0" y="984" text-anchor="middle" font-family="Arial" font-size="15">Выдача доступна?</text>
+<rect x="130" y="1200" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="1234.0" text-anchor="middle" font-family="Arial" font-size="15">Система: показать «Готов» и</text>
+<text x="260.0" y="1252.0" text-anchor="middle" font-family="Arial" font-size="15">номер ячейки</text>
+<polygon points="260.0,1390 292,1422.0 260.0,1454 228,1422.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
+<circle cx="260.0" cy="1422.0" r="18" fill="none" stroke="#0f172a"/><circle cx="260.0" cy="1422.0" r="15" fill="none" stroke="#0f172a"/>
+<polygon points="260.0,1412.0 269.51056516295154,1418.9098300562505 265.87785252292474,1430.0901699437495 254.12214747707526,1430.0901699437495 250.48943483704846,1418.9098300562505" fill="none" stroke="#0f172a"/>
+<text x="260.0" y="1364" text-anchor="middle" font-family="Arial" font-size="15">Ожидать событие выдачи</text>
+<circle cx="260.0" cy="1582.0" r="22" stroke="#0f172a" stroke-width="2" fill="white"/>
+<circle cx="260.0" cy="1582.0" r="17" fill="none" stroke="#0f172a"/>
+<text x="260.0" y="1625" text-anchor="middle" font-family="Arial" font-size="15">Открыта ячейка своим талоном</text>
+<text x="260.0" y="1643" text-anchor="middle" font-family="Arial" font-size="15">(A-02)</text>
+<circle cx="730.0" cy="1582.0" r="22" stroke="#0f172a" stroke-width="2" fill="white"/>
+<circle cx="730.0" cy="1582.0" r="17" fill="none" stroke="#0f172a"/>
+<text x="730.0" y="1625" text-anchor="middle" font-family="Arial" font-size="15">Истекли 10 минут (A-04)</text>
+<circle cx="1200.0" cy="1582.0" r="22" stroke="#0f172a" stroke-width="2" fill="white"/>
+<circle cx="1200.0" cy="1582.0" r="17" fill="none" stroke="#0f172a"/>
+<text x="1200.0" y="1625" text-anchor="middle" font-family="Arial" font-size="15">Сбой выдачи</text>
+<rect x="130" y="1750" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="1784.0" text-anchor="middle" font-family="Arial" font-size="15">Система: условно «Выдан», снять</text>
+<text x="260.0" y="1802.0" text-anchor="middle" font-family="Arial" font-size="15">номер (A-02)</text>
+<rect x="600" y="1730" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="730.0" y="1755.0" text-anchor="middle" font-family="Arial" font-size="15">Система: снять номер,</text>
+<text x="730.0" y="1773.0" text-anchor="middle" font-family="Arial" font-size="15">блокировать выдачу, уведомить</text>
+<text x="730.0" y="1791.0" text-anchor="middle" font-family="Arial" font-size="15">сотрудника</text>
+<rect x="600" y="1900" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="730.0" y="1934.0" text-anchor="middle" font-family="Arial" font-size="15">Сотрудник: убрать еду,</text>
+<text x="730.0" y="1952.0" text-anchor="middle" font-family="Arial" font-size="15">подтвердить освобождение (A-04)</text>
+<rect x="130" y="1930" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="1964.0" text-anchor="middle" font-family="Arial" font-size="15">Сотрудник: проверить ячейку,</text>
+<text x="260.0" y="1982.0" text-anchor="middle" font-family="Arial" font-size="15">подтвердить освобождение</text>
+<circle cx="260.0" cy="2122.0" r="22" stroke="#0f172a" stroke-width="4" fill="white"/>
+<text x="260.0" y="2165" text-anchor="middle" font-family="Arial" font-size="15">Выдача и свободная ячейка</text>
+<text x="260.0" y="2183" text-anchor="middle" font-family="Arial" font-size="15">зарегистрированы</text>
+<circle cx="730.0" cy="2122.0" r="22" stroke="#0f172a" stroke-width="4" fill="white"/>
+<text x="730.0" y="2165" text-anchor="middle" font-family="Arial" font-size="15">Неявка; место освобождено</text>
+<rect x="1070" y="1010" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="1200.0" y="1044.0" text-anchor="middle" font-family="Arial" font-size="15">Система: «Проблема», скрыть</text>
+<text x="1200.0" y="1062.0" text-anchor="middle" font-family="Arial" font-size="15">номер, уведомить менеджера</text>
+<rect x="1070" y="1200" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="1200.0" y="1234.0" text-anchor="middle" font-family="Arial" font-size="15">Менеджер: принять заказ в</text>
+<text x="1200.0" y="1252.0" text-anchor="middle" font-family="Arial" font-size="15">ручной разбор (A-03)</text>
+<circle cx="1200.0" cy="1362.0" r="22" stroke="#0f172a" stroke-width="4" fill="white"/>
+<text x="1200.0" y="1405" text-anchor="middle" font-family="Arial" font-size="15">Продолжение по регламенту</text>
+</svg>
