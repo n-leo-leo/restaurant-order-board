@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1550" viewBox="0 0 1200 1550"><defs><marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#475569"/></marker></defs><rect width="100%" height="100%" fill="white"/>
+<text x="36" y="32" font-family="Arial" font-size="23" font-weight="bold">Доступность блюд и пополнение</text>
+<text x="36" y="58" font-family="Arial" font-size="15" fill="#475569">Аналитическая BPMN-схема · роли указаны в задачах · A-xx — условия, ожидающие подтверждения</text>
+<polyline points="260.0,144 260.0,240" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,316 260.0,430" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260.0,494 260.0,620" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="268.0" y="518" font-family="Arial" font-size="15" fill="#334155">Да</text>
+<polyline points="292,462 780,462 780,620" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="300" y="486" font-family="Arial" font-size="15" fill="#334155">Нет</text>
+<polyline points="260,696 260,852 488,852" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="780,696 780,852 552,852" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="520.0,884 520.0,1010" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="488,1042 260,1042 260,1210" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="426" y="1066" font-family="Arial" font-size="15" fill="#334155">Нет</text>
+<polyline points="552,1042 780,1042 780,1200" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="560" y="1066" font-family="Arial" font-size="15" fill="#334155">Да</text>
+<polyline points="780.0,1276 780.0,1390" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="910,1428 1110,1428 1110,278 390,278" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<text x="918" y="1452" font-family="Arial" font-size="15" fill="#334155">Обновить остатки</text>
+<circle cx="260.0" cy="122.0" r="22" stroke="#0f172a" stroke-width="2" fill="white"/>
+<text x="260.0" y="165" text-anchor="middle" font-family="Arial" font-size="15">Изменение остатков или срока</text>
+<text x="260.0" y="183" text-anchor="middle" font-family="Arial" font-size="15">годности</text>
+<rect x="130" y="240" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="274.0" text-anchor="middle" font-family="Arial" font-size="15">Склад: обновить данные об</text>
+<text x="260.0" y="292.0" text-anchor="middle" font-family="Arial" font-size="15">ингредиентах</text>
+<polygon points="260.0,430 292,462.0 260.0,494 228,462.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="469.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
+<text x="260.0" y="404" text-anchor="middle" font-family="Arial" font-size="15">Блюдо доступно?</text>
+<rect x="130" y="620" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="260.0" y="654.0" text-anchor="middle" font-family="Arial" font-size="15">Приложение: показать доступное</text>
+<text x="260.0" y="672.0" text-anchor="middle" font-family="Arial" font-size="15">блюдо</text>
+<rect x="650" y="620" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="780.0" y="654.0" text-anchor="middle" font-family="Arial" font-size="15">Приложение: скрыть недоступное</text>
+<text x="780.0" y="672.0" text-anchor="middle" font-family="Arial" font-size="15">блюдо</text>
+<polygon points="520.0,820 552,852.0 520.0,884 488,852.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
+<text x="520.0" y="859.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
+<polygon points="520.0,1010 552,1042.0 520.0,1074 488,1042.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
+<text x="520.0" y="1049.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
+<text x="520.0" y="984" text-anchor="middle" font-family="Arial" font-size="15">Остаток ниже 30%?</text>
+<rect x="650" y="1200" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="780.0" y="1234.0" text-anchor="middle" font-family="Arial" font-size="15">Склад/роботы: уведомить</text>
+<text x="780.0" y="1252.0" text-anchor="middle" font-family="Arial" font-size="15">сотрудника о пополнении</text>
+<rect x="650" y="1390" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
+<text x="780.0" y="1424.0" text-anchor="middle" font-family="Arial" font-size="15">Сотрудник: загрузить</text>
+<text x="780.0" y="1442.0" text-anchor="middle" font-family="Arial" font-size="15">ингредиенты</text>
+<circle cx="260.0" cy="1232.0" r="22" stroke="#0f172a" stroke-width="4" fill="white"/>
+<text x="260.0" y="1275" text-anchor="middle" font-family="Arial" font-size="15">Доступность актуализирована</text>
+</svg>

@@ -38,6 +38,7 @@ nav:
       - Карта историй: 02_requirements/story-map.md
       - Пользовательские истории: 02_requirements/user-stories.md
       - НФТ: 02_requirements/nfr.md
+      - Допущения этапа 1: 02_requirements/assumptions.md
       - Диаграмма Use Case: 02_requirements/use-case.md
   - 3. Информационная модель:
       - Диаграмма классов: 03_model/class-diagram.md

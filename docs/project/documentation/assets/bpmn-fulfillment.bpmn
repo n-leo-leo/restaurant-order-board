@@ -1,0 +1,332 @@
+<?xml version='1.0' encoding='utf-8'?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="bpmn-fulfillment_defs" targetNamespace="https://restaurant.example/analysis">
+  <bpmn:process id="bpmn-fulfillment" name="Приготовление и выдача заказа" isExecutable="false">
+    <bpmn:documentation>Аналитическая схема. Роль указана в названии задачи; дорожки не выделены. Условные правила A-xx требуют подтверждения. Это не исполняемая интеграционная модель.</bpmn:documentation>
+    <bpmn:startEvent id="p_start" name="Заказ оплачен">
+      <bpmn:outgoing>Flow_bpmn-fulfillment_0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="p_send" name="Система: передать заказ роботам; показать «Готовится»">
+      <bpmn:incoming>Flow_bpmn-fulfillment_0</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="p_cook" name="Роботы: приготовить заказ">
+      <bpmn:incoming>Flow_bpmn-fulfillment_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="p_ok" name="Основной робот справился?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_bpmn-fulfillment_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="p_reserve" name="Роботы: передать резервному роботу">
+      <bpmn:incoming>Flow_bpmn-fulfillment_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="p_resok" name="Резервный робот справился?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_bpmn-fulfillment_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="p_cell" name="Роботы: разместить еду в ячейке">
+      <bpmn:incoming>Flow_bpmn-fulfillment_3</bpmn:incoming>
+      <bpmn:incoming>Flow_bpmn-fulfillment_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="p_cellok" name="Выдача доступна?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_bpmn-fulfillment_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_9</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="p_ready" name="Система: показать «Готов» и номер ячейки">
+      <bpmn:incoming>Flow_bpmn-fulfillment_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_11</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:eventBasedGateway id="p_wait" name="Ожидать событие выдачи">
+      <bpmn:incoming>Flow_bpmn-fulfillment_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_12</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_13</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_14</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="p_open" name="Открыта ячейка своим талоном (A-02)">
+      <bpmn:conditionalEventDefinition id="p_open_def">
+        <bpmn:condition>Открыта ячейка своим талоном (A-02)</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+      <bpmn:incoming>Flow_bpmn-fulfillment_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_15</bpmn:outgoing>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="p_timer" name="Истекли 10 минут (A-04)">
+      <bpmn:timerEventDefinition id="p_timer_def">
+        <bpmn:timeDuration>PT10M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+      <bpmn:incoming>Flow_bpmn-fulfillment_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_17</bpmn:outgoing>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="p_failure" name="Сбой выдачи">
+      <bpmn:conditionalEventDefinition id="p_failure_def">
+        <bpmn:condition>Сбой выдачи</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+      <bpmn:incoming>Flow_bpmn-fulfillment_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_19</bpmn:outgoing>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="p_issued" name="Система: условно «Выдан», снять номер (A-02)">
+      <bpmn:incoming>Flow_bpmn-fulfillment_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_16</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="p_clean" name="Сотрудник: убрать еду, подтвердить освобождение (A-04)">
+      <bpmn:incoming>Flow_bpmn-fulfillment_17</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_18</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="p_end" name="Выдача зарегистрирована">
+      <bpmn:incoming>Flow_bpmn-fulfillment_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="p_expired" name="Неявка; место освобождено">
+      <bpmn:incoming>Flow_bpmn-fulfillment_18</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="p_problem" name="Система: «Проблема», скрыть номер, уведомить менеджера">
+      <bpmn:incoming>Flow_bpmn-fulfillment_7</bpmn:incoming>
+      <bpmn:incoming>Flow_bpmn-fulfillment_10</bpmn:incoming>
+      <bpmn:incoming>Flow_bpmn-fulfillment_19</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_20</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="p_manager" name="Менеджер: принять заказ в ручной разбор (A-03)">
+      <bpmn:incoming>Flow_bpmn-fulfillment_20</bpmn:incoming>
+      <bpmn:outgoing>Flow_bpmn-fulfillment_21</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="p_manualend" name="Продолжение по регламенту">
+      <bpmn:incoming>Flow_bpmn-fulfillment_21</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_0" sourceRef="p_start" targetRef="p_send" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_1" sourceRef="p_send" targetRef="p_cook" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_2" sourceRef="p_cook" targetRef="p_ok" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_3" sourceRef="p_ok" targetRef="p_cell" name="Да" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_4" sourceRef="p_ok" targetRef="p_reserve" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_5" sourceRef="p_reserve" targetRef="p_resok" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_6" sourceRef="p_resok" targetRef="p_cell" name="Да" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_7" sourceRef="p_resok" targetRef="p_problem" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_8" sourceRef="p_cell" targetRef="p_cellok" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_9" sourceRef="p_cellok" targetRef="p_ready" name="Да" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_10" sourceRef="p_cellok" targetRef="p_problem" name="Нет" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_11" sourceRef="p_ready" targetRef="p_wait" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_12" sourceRef="p_wait" targetRef="p_open" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_13" sourceRef="p_wait" targetRef="p_timer" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_14" sourceRef="p_wait" targetRef="p_failure" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_15" sourceRef="p_open" targetRef="p_issued" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_16" sourceRef="p_issued" targetRef="p_end" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_17" sourceRef="p_timer" targetRef="p_clean" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_18" sourceRef="p_clean" targetRef="p_expired" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_19" sourceRef="p_failure" targetRef="p_problem" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_20" sourceRef="p_problem" targetRef="p_manager" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_21" sourceRef="p_manager" targetRef="p_manualend" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="bpmn-fulfillment_diagram">
+    <bpmndi:BPMNPlane id="bpmn-fulfillment_plane" bpmnElement="bpmn-fulfillment">
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_0" bpmnElement="Flow_bpmn-fulfillment_0">
+        <di:waypoint x="260.0" y="144" />
+        <di:waypoint x="260.0" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_1" bpmnElement="Flow_bpmn-fulfillment_1">
+        <di:waypoint x="260.0" y="306" />
+        <di:waypoint x="260.0" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_2" bpmnElement="Flow_bpmn-fulfillment_2">
+        <di:waypoint x="260.0" y="446" />
+        <di:waypoint x="260.0" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_3" bpmnElement="Flow_bpmn-fulfillment_3">
+        <di:waypoint x="260.0" y="594" />
+        <di:waypoint x="260.0" y="820" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="268.0" y="603" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_4" bpmnElement="Flow_bpmn-fulfillment_4">
+        <di:waypoint x="292" y="562" />
+        <di:waypoint x="600" y="562" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="300" y="571" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_5" bpmnElement="Flow_bpmn-fulfillment_5">
+        <di:waypoint x="730.0" y="606" />
+        <di:waypoint x="730.0" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_6" bpmnElement="Flow_bpmn-fulfillment_6">
+        <di:waypoint x="698" y="752" />
+        <di:waypoint x="520" y="752" />
+        <di:waypoint x="520" y="858" />
+        <di:waypoint x="390" y="858" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="636" y="761" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_7" bpmnElement="Flow_bpmn-fulfillment_7">
+        <di:waypoint x="762" y="752" />
+        <di:waypoint x="1200" y="752" />
+        <di:waypoint x="1200" y="1010" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="770" y="761" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_8" bpmnElement="Flow_bpmn-fulfillment_8">
+        <di:waypoint x="260.0" y="896" />
+        <di:waypoint x="260.0" y="1010" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_9" bpmnElement="Flow_bpmn-fulfillment_9">
+        <di:waypoint x="260.0" y="1074" />
+        <di:waypoint x="260.0" y="1200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="268.0" y="1083" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_10" bpmnElement="Flow_bpmn-fulfillment_10">
+        <di:waypoint x="292" y="1042" />
+        <di:waypoint x="1070" y="1042" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="300" y="1051" width="170" height="22" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_11" bpmnElement="Flow_bpmn-fulfillment_11">
+        <di:waypoint x="260.0" y="1276" />
+        <di:waypoint x="260.0" y="1390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_12" bpmnElement="Flow_bpmn-fulfillment_12">
+        <di:waypoint x="260.0" y="1454" />
+        <di:waypoint x="260.0" y="1560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_13" bpmnElement="Flow_bpmn-fulfillment_13">
+        <di:waypoint x="292" y="1422" />
+        <di:waypoint x="730" y="1422" />
+        <di:waypoint x="730" y="1560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_14" bpmnElement="Flow_bpmn-fulfillment_14">
+        <di:waypoint x="260" y="1454" />
+        <di:waypoint x="260" y="1500" />
+        <di:waypoint x="1200" y="1500" />
+        <di:waypoint x="1200" y="1560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_15" bpmnElement="Flow_bpmn-fulfillment_15">
+        <di:waypoint x="260.0" y="1604" />
+        <di:waypoint x="260.0" y="1750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_16" bpmnElement="Flow_bpmn-fulfillment_16">
+        <di:waypoint x="260.0" y="1826" />
+        <di:waypoint x="260.0" y="1930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_17" bpmnElement="Flow_bpmn-fulfillment_17">
+        <di:waypoint x="730.0" y="1604" />
+        <di:waypoint x="730.0" y="1750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_18" bpmnElement="Flow_bpmn-fulfillment_18">
+        <di:waypoint x="730.0" y="1826" />
+        <di:waypoint x="730.0" y="1930" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_19" bpmnElement="Flow_bpmn-fulfillment_19">
+        <di:waypoint x="1222" y="1582" />
+        <di:waypoint x="1420" y="1582" />
+        <di:waypoint x="1420" y="1048" />
+        <di:waypoint x="1330" y="1048" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_20" bpmnElement="Flow_bpmn-fulfillment_20">
+        <di:waypoint x="1200.0" y="1086" />
+        <di:waypoint x="1200.0" y="1200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_21" bpmnElement="Flow_bpmn-fulfillment_21">
+        <di:waypoint x="1200.0" y="1276" />
+        <di:waypoint x="1200.0" y="1340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_start" bpmnElement="p_start">
+        <dc:Bounds x="238" y="100" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="146" y="149" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_send" bpmnElement="p_send">
+        <dc:Bounds x="130" y="230" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_cook" bpmnElement="p_cook">
+        <dc:Bounds x="130" y="370" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_ok" bpmnElement="p_ok">
+        <dc:Bounds x="228" y="530" width="64" height="64" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="486" width="210" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_reserve" bpmnElement="p_reserve">
+        <dc:Bounds x="600" y="530" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_resok" bpmnElement="p_resok">
+        <dc:Bounds x="698" y="720" width="64" height="64" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="628" y="676" width="210" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_cell" bpmnElement="p_cell">
+        <dc:Bounds x="130" y="820" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_cellok" bpmnElement="p_cellok">
+        <dc:Bounds x="228" y="1010" width="64" height="64" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="966" width="210" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_ready" bpmnElement="p_ready">
+        <dc:Bounds x="130" y="1200" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_wait" bpmnElement="p_wait">
+        <dc:Bounds x="228" y="1390" width="64" height="64" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="158" y="1346" width="210" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_open" bpmnElement="p_open">
+        <dc:Bounds x="238" y="1560" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="146" y="1609" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_timer" bpmnElement="p_timer">
+        <dc:Bounds x="708" y="1560" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="616" y="1609" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_failure" bpmnElement="p_failure">
+        <dc:Bounds x="1178" y="1560" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1086" y="1609" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_issued" bpmnElement="p_issued">
+        <dc:Bounds x="130" y="1750" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_clean" bpmnElement="p_clean">
+        <dc:Bounds x="600" y="1750" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_end" bpmnElement="p_end">
+        <dc:Bounds x="238" y="1930" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="146" y="1979" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_expired" bpmnElement="p_expired">
+        <dc:Bounds x="708" y="1930" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="616" y="1979" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_problem" bpmnElement="p_problem">
+        <dc:Bounds x="1070" y="1010" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_manager" bpmnElement="p_manager">
+        <dc:Bounds x="1070" y="1200" width="260" height="76" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bpmn-fulfillment_shape_p_manualend" bpmnElement="p_manualend">
+        <dc:Bounds x="1178" y="1340" width="44" height="44" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1086" y="1389" width="230" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
