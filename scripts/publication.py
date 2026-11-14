@@ -2,6 +2,7 @@
 import atexit
 import hashlib
 import json
+from html import escape
 from pathlib import Path
 import shutil
 from tempfile import TemporaryDirectory
@@ -29,7 +30,9 @@ def on_config(config):
         target = public / 'homework' / number
         target.mkdir(parents=True)
         page = [f'# ДЗ {number}. {title}', '', '**Статус: принято.**', '',
-                'Сохранённая версия результата домашнего задания.', '', '## Результат', '']
+                '## Результат', '']
+        downloads = []
+        has_markdown = any(Path(entry['path']).suffix == '.md' for entry in assignment['files'])
         for entry in assignment['files']:
             relative = Path(entry['path'])
             source = ROOT / 'docs/home_work' / folder / relative
@@ -41,9 +44,28 @@ def on_config(config):
             if '.assets' in relative.parts[0]:
                 continue
             url = quote(relative.as_posix())
-            page.append(f'- [{relative.name}]({url})')
-            if relative.suffix.lower() in {'.png', '.jpeg', '.jpg'}:
-                page.extend(['', f'![{title}]({url})', ''])
+            extension = relative.suffix.lower()
+            if extension == '.md':
+                # Keep an exact source download; render the same text on the assignment page.
+                raw = target / 'originals' / relative
+                raw.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, raw.with_suffix('.txt'))
+                downloads.append(f'- [{relative.name}](originals/{quote(relative.with_suffix(".txt").as_posix())})')
+                page.extend(['', source.read_text(encoding='utf-8'), ''])
+            else:
+                downloads.append(f'- [{relative.name}]({url})')
+                if extension in {'.png', '.jpeg', '.jpg'}:
+                    page.extend(['', f'![{title}]({url})', ''])
+                elif extension == '.pdf' and not has_markdown:
+                    # The assignment index and its attachments share the same directory.
+                    pdf_url = url
+                    page.extend(['', f'<object data="{pdf_url}" type="application/pdf" '
+                                 'width="100%" height="800" aria-label="Результат домашнего задания">'
+                                 f'<p>Просмотр PDF недоступен. <a href="{pdf_url}">Открыть PDF</a></p></object>', ''])
+                elif extension in {'.txt', '.yaml', '.yml'}:
+                    text = escape(source.read_text(encoding='utf-8'))
+                    page.extend(['', f'<pre><code>{text}</code></pre>', ''])
+        page.extend(['', '## Скачать файлы', '', *downloads])
         (target / 'index.md').write_text('\n'.join(page) + '\n')
         catalog.append(f'- [ДЗ {number}. {title}]({number}/index.md)')
         homework_nav.append({f'{number}. {title}': f'homework/{number}/index.md'})

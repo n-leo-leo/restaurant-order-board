@@ -11,7 +11,6 @@ theme:
   name: material
   language: ru
   features:
-    - navigation.sections
     - navigation.top
     - search.highlight
     - content.code.copy
