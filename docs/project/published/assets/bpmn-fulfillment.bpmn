@@ -47,11 +47,11 @@
       <bpmn:outgoing>Flow_bpmn-fulfillment_13</bpmn:outgoing>
       <bpmn:outgoing>Flow_bpmn-fulfillment_14</bpmn:outgoing>
     </bpmn:eventBasedGateway>
-    <bpmn:intermediateCatchEvent id="p_open" name="Открыта ячейка своим талоном (A-02)">
+    <bpmn:intermediateCatchEvent id="p_open" name="После талона: дверь закрыта, вес стабилен, ячейка пуста (A-02)">
       <bpmn:incoming>Flow_bpmn-fulfillment_12</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_15</bpmn:outgoing>
       <bpmn:conditionalEventDefinition id="p_open_def">
-        <bpmn:condition>Открыта ячейка своим талоном (A-02)</bpmn:condition>
+        <bpmn:condition>После талона: дверь закрыта, вес стабилен, ячейка пуста (A-02)</bpmn:condition>
       </bpmn:conditionalEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="p_timer" name="Истекли 10 минут (A-04)">
@@ -61,14 +61,14 @@
         <bpmn:timeDuration>PT10M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:intermediateCatchEvent id="p_failure" name="Сбой выдачи">
+    <bpmn:intermediateCatchEvent id="p_failure" name="Сбой выдачи или контроля веса">
       <bpmn:incoming>Flow_bpmn-fulfillment_14</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_21</bpmn:outgoing>
       <bpmn:conditionalEventDefinition id="p_failure_def">
-        <bpmn:condition>Сбой выдачи</bpmn:condition>
+        <bpmn:condition>Сбой выдачи или контроля веса</bpmn:condition>
       </bpmn:conditionalEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:task id="p_issued" name="Система: условно «Выдан», снять номер (A-02)">
+    <bpmn:task id="p_issued" name="Система: «Выдан», снять номер (A-02)">
       <bpmn:incoming>Flow_bpmn-fulfillment_15</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_16</bpmn:outgoing>
     </bpmn:task>
@@ -76,11 +76,11 @@
       <bpmn:incoming>Flow_bpmn-fulfillment_18</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_19</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="p_clean" name="Сотрудник: убрать еду, подтвердить освобождение (A-04)">
+    <bpmn:task id="p_clean" name="Сотрудник: убрать еду; система: подтвердить пустоту (A-04)">
       <bpmn:incoming>Flow_bpmn-fulfillment_19</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_20</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="p_verify" name="Сотрудник: проверить ячейку, подтвердить освобождение">
+    <bpmn:task id="p_verify" name="Система: освободить исправную пустую ячейку">
       <bpmn:incoming>Flow_bpmn-fulfillment_16</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_17</bpmn:outgoing>
     </bpmn:task>
