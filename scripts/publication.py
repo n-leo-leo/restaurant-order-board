@@ -29,8 +29,7 @@ def on_config(config):
             raise ValueError('ДЗ 17 запрещено публиковать')
         target = public / 'homework' / number
         target.mkdir(parents=True)
-        page = [f'# ДЗ {number}. {title}', '', '**Статус: принято.**', '',
-                '## Результат', '']
+        page = [f'# ДЗ {number}. {title}', '']
         downloads = []
         has_markdown = any(Path(entry['path']).suffix == '.md' for entry in assignment['files'])
         for entry in assignment['files']:
