@@ -4,6 +4,9 @@ site_url: https://n-leo-leo.github.io/restaurant-order-board/
 docs_dir: docs/project/published
 site_dir: site
 
+hooks:
+  - scripts/publication.py
+
 theme:
   name: material
   language: ru
