@@ -1,0 +1,64 @@
+site_name: "Рабочая документация — Робот и точка"
+site_description: Проектная работа курса «Системный аналитик»
+site_url: https://n-leo-leo.github.io/restaurant-order-board/
+docs_dir: docs/project/documentation
+site_dir: site-draft
+
+theme:
+  name: material
+  language: ru
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - tables
+  - toc:
+      permalink: true
+  - attr_list
+
+nav:
+  - О проекте: index.md
+  - Решения и допущения: decisions.md
+  - 1. Бизнес-требования:
+      - Цели и требования бизнеса: 01_business/goals.md
+      - Метрики: 01_business/metrics.md
+      - Бизнес-процессы: 01_business/processes.md
+      - Роли и границы системы: 01_business/scope.md
+  - 2. Требования к приложению:
+      - Карта историй: 02_requirements/story-map.md
+      - Пользовательские истории: 02_requirements/user-stories.md
+      - НФТ: 02_requirements/nfr.md
+      - Диаграмма Use Case: 02_requirements/use-case.md
+  - 3. Информационная модель:
+      - Диаграмма классов: 03_model/class-diagram.md
+      - Описание сущностей: 03_model/entities.md
+      - Статусы заказа: 03_model/order-states.md
+  - 4. Архитектура:
+      - Архитектурный стиль: 04_architecture/style.md
+      - Компоненты: 04_architecture/components.md
+      - Перечень интеграций: 04_architecture/integrations.md
+      - Схемы интеграций: 04_architecture/integration-flows.md
+      - Нагрузка и выбор СУБД: 04_architecture/load-db.md
+  - 5. API и UI:
+      - Ресурсы и эндпоинты: 05_api/resources.md
+      - OpenAPI: 05_api/openapi.md
+      - UI и взаимодействие с API: 05_api/ui.md
+  - 6. Декомпозиция:
+      - DoR и DoD: 06_decomposition/dor-dod.md
+      - Критерии приемки: 06_decomposition/acceptance-criteria.md
+      - Задачи: 06_decomposition/tasks.md
+  - 7. Тестирование:
+      - Тест-кейсы MVP: 07_testing/test-cases-mvp.md
+      - Тест-кейсы первого релиза: 07_testing/test-cases-r1.md
+      - Чек-лист: 07_testing/checklist.md
+  - 8. Трассировка: 08_traceability.md
