@@ -58,6 +58,7 @@ nav:
       - Нагрузка и выбор СУБД: published/04_architecture/load-db.md
   - 5. API и UI:
       - Ресурсы и эндпоинты: published/05_api/resources.md
+      - Прототипы экранов: published/05_api/prototypes.md
       - OpenAPI: published/05_api/openapi.md
       - UI и взаимодействие с API: published/05_api/ui.md
       - Контракты адаптеров: published/05_api/adapter-contracts.md

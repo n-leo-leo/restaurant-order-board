@@ -56,5 +56,6 @@ nav:
   - 5. Интерфейсы и API:
       - Интерфейсы и макеты: 05_api/ui.md
       - Ресурсы и операции: 05_api/resources.md
+      - Прототипы экранов: 05_api/prototypes.md
       - OpenAPI: 05_api/openapi.md
       - Контракты адаптеров: 05_api/adapter-contracts.md

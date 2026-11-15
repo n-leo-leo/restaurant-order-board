@@ -1,0 +1,18 @@
+/* Render the local, offline UI prototype. Requires Playwright and Chrome.
+ * NODE_PATH may point to the bundled runtime's node_modules.
+ * Screens are authored in published/assets/prototype; no API is called.
+ */
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
+const {chromium}=require('playwright');
+const repo=path.resolve(__dirname,'..');
+const root=path.join(repo,'docs/project/published/assets/prototype');
+const screens=require(path.join(root,'screens.js'));
+const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png'};
+const server=http.createServer((req,res)=>{let name=decodeURIComponent(new URL(req.url,'http://localhost').pathname);if(name==='/')name='/index.html';const file=path.resolve(root,'.'+name);if(!file.startsWith(root+path.sep)){res.writeHead(403).end();return;}try{res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));}catch{res.writeHead(404).end();}});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,channel:'chrome'});let report=[];const onlyArg=process.argv.find(v=>v.startsWith('--screens='));const only=onlyArg?onlyArg.slice(10).split(','):null;if(only&&fs.existsSync('/tmp/restaurant-prototype-render-report.json'))report=JSON.parse(fs.readFileSync('/tmp/restaurant-prototype-render-report.json','utf8')).screens.filter(r=>!only.includes(r.screen));try{const page=await browser.newPage({locale:'ru-RU'});const errors=[];page.on('pageerror',err=>errors.push(err.message));
+for(const m of screens.filter(m=>!only||only.includes(m.id))){let count=0;for(const [state,label] of Object.entries(m.states)){const w=m.format==='kiosk'?900:1440,h=m.format==='kiosk'?1360:m.format==='board'?900:1000;await page.setViewportSize({width:w,height:h});await page.goto(`http://127.0.0.1:${server.address().port}/?capture=1&screen=${m.id}&state=${state}`,{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);
+const clipping=await page.evaluate(()=>{const screen=document.querySelector('#screen');let bad=[];for(const el of screen.querySelectorAll('button,input,select,textarea,h1,h2,h3,.product-card,.cart-line,.panel,.field')){const r=el.getBoundingClientRect();if(!r.width||!r.height)continue;let parent=el.parentElement;while(parent&&parent!==screen.parentElement){const st=getComputedStyle(parent);if(['hidden','clip'].includes(st.overflowY)||parent===screen){const b=parent.getBoundingClientRect();if(r.top<b.top-2||r.bottom>b.bottom+2||r.left<b.left-2||r.right>b.right+2){bad.push({tag:el.tagName,text:(el.textContent||el.name||'').trim().slice(0,70),parent:parent.className,top:r.top,bottom:r.bottom,limit:b.bottom});break;}}parent=parent.parentElement;}}
+return bad;});
+const file=`${m.id.toLowerCase()}-${state}.png`;await page.locator('#screen').screenshot({path:path.join(root,'screens',file)});report.push({screen:m.id,state,label,file,width:w,height:h,clipping});count++;}console.log(`${m.id}: ${count} states rendered`);}
+fs.writeFileSync('/tmp/restaurant-prototype-render-report.json',JSON.stringify({screens:report,errors},null,2));const bad=report.filter(s=>s.clipping.length);console.log(JSON.stringify({screens:screens.length,states:report.length,pageErrors:errors,clippedScreens:bad.map(s=>({screen:s.screen,state:s.state,clipping:s.clipping}))},null,2));if(errors.length||bad.length)process.exitCode=1;
+}finally{await browser.close();server.close();}})().catch(e=>{console.error(e);server.close();process.exitCode=1});
