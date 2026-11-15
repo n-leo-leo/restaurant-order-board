@@ -71,6 +71,39 @@ def walk(value):
             walk(child)
 
 
+# Semantic regressions that syntactic OpenAPI validation does not detect.
+schemas = spec['components']['schemas']
+for name, fields in {
+    'Session': ['token'], 'StaffLogin': ['login'], 'MenuItem': ['name', 'price'],
+    'Calculation': ['subtotal', 'discount', 'afterDiscount', 'total'],
+    'Purchase': ['orderNumber', 'cellNumber'], 'Payment': ['amount', 'externalPaymentId'],
+    'Refund': ['amount', 'externalRefundId'], 'Error': ['message'],
+}.items():
+    for field in fields:
+        assert schemas[name]['properties'][field].get('x-release') != 'R1', (name, field)
+for field in ['insertedAmount', 'changeAmount', 'cashReturnStatus']:
+    assert schemas['Payment']['properties'][field]['x-release'] == 'R1'
+assert schemas['PrepareInput']['properties']['loyaltyToken']['x-release'] == 'R1'
+assert schemas['Session']['properties']['activePurchaseId']['format'] == 'uuid'
+assert ops['getSession']['security'] == [{'deviceAuth': []}]
+assert 'end_session' in schemas['Session']['properties']['allowedActions']['items']['enum']
+assert schemas['DocumentState']['properties']['problemStatus']['enum'] == ['new', 'accepted', 'resolved']
+
+def check_time_context(value, path=()):
+    if isinstance(value, dict):
+        if value.get('format') == 'date-time' and 'Срок токена' in value.get('description', ''):
+            assert path in [('Session', 'properties', 'expiresAt')], path
+        for key, child in value.items():
+            check_time_context(child, path + (str(key),))
+    elif isinstance(value, list):
+        for i, child in enumerate(value):
+            check_time_context(child, path + (str(i),))
+
+check_time_context(schemas)
+for op in ops.values():
+    if '412' in op['responses']:
+        assert any(p.get('$ref', '').endswith('/IfMatch') for p in op.get('parameters', [])), op['operationId']
+
 walk(spec)
 # The Swagger view is derived from the canonical YAML, not a second edited contract.
 viewer = (PUBLIC / 'assets/swagger/index.html').read_text(encoding='utf-8')
@@ -130,7 +163,7 @@ assert not (PROJECT / 'documentation/05_api').exists()
 
 flow_page = (PUBLIC / '04_architecture/integration-flows.md').read_text()
 blocks = re.findall(r'```mermaid\n(.*?)```', flow_page, re.S)
-assert len(blocks) == 6
+assert len(blocks) == 8
 for i, source in enumerate(blocks, 1):
     file = PUBLIC / f'assets/stage3-flow-{i}.svg'
     xml = file.read_text()
@@ -208,4 +241,4 @@ for directory in sys.argv[1:]:
             count += 1
     print(f'{build.name}: {len(pages)} HTML pages, {count} local links/anchors/assets valid')
 print(f'PASS: OpenAPI, {len(ops)} operations, {len(spec["components"]["schemas"])} schemas, '
-      '35 US, original IDs/releases, 46 AC, 6 source-matched SVG, unchanged homework archive')
+      f'35 US, original IDs/releases, 46 AC, {len(blocks)} source-matched SVG, unchanged homework archive')

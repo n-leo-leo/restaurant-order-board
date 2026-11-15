@@ -12,8 +12,8 @@
 | БТ-01 | US-06 | AC-06.1 | Этап 4 | replaceCart, startPayment | Этап 4 |
 | БТ-14 | US-07 | AC-07.1 | Этап 4 | getMenuItem, replaceCart | Этап 4 |
 | БТ-15 | US-08 | AC-08.1 | Этап 4 | preparePurchase | Этап 4 |
-| БТ-03, БТ-05 | US-09 | AC-09.1 | Этап 4 | preparePurchase, startPayment, getPayment, getPurchase, verifyPurchase, reprintTicket | Этап 4 |
-| БТ-03, БТ-07 | US-10 | AC-10.1 | Этап 4 | getPayment, getPurchase | Этап 4 |
+| БТ-03, БТ-05 | US-09 | AC-09.1 | Этап 4 | preparePurchase, startPayment, getPayment, getSession, getPurchase, verifyPurchase, reprintTicket | Этап 4 |
+| БТ-03, БТ-07 | US-10 | AC-10.1 | Этап 4 | getPayment, getSession, getPurchase | Этап 4 |
 | БТ-06 | US-11 | AC-11.1 | Этап 4 | getBoard, confirmBoardDisplay, getBoardDisplay | Этап 4 |
 | БТ-06 | US-12 | AC-12.1 | Этап 4 | I-03 (талон и выдача), reprintTicket | Этап 4 |
 | БТ-07 | US-13 | AC-13.1 | Этап 4 | getPurchase, getBoard; помощь в зале | Этап 4 |
@@ -41,8 +41,8 @@
 | БТ-18 | US-35 | AC-35.1 | Этап 4 | getPurchase, getStaffPurchase | Этап 4 |
 | БТ-06, БТ-07 | US-12, US-16 | AC-16.2 | Этап 4 | I-03 (талон и выдача), reprintTicket, listCells, serviceCell, acceptProblem | Этап 4 |
 | БТ-06, БТ-07 | US-16 | AC-16.3 | Этап 4 | listCells, serviceCell, acceptProblem | Этап 4 |
-| БТ-03, БТ-05, БТ-07 | US-09, US-10 | AC-09.2 | Этап 4 | preparePurchase, startPayment, getPayment, getPurchase, verifyPurchase, reprintTicket | Этап 4 |
-| БТ-03, БТ-06, БТ-07, БТ-10 | US-09, US-12, US-14, US-15 | AC-09.3 | Этап 4 | preparePurchase, startPayment, getPayment, getPurchase, verifyPurchase, reprintTicket, I-03 (талон и выдача), listProblems, acceptProblem, resolveProblem, getStaffSalesState, setSalesState, findPurchases, getStaffPurchase, recordImpossibility, registerExternalRefund, getRefund | Этап 4 |
+| БТ-03, БТ-05, БТ-07 | US-09, US-10 | AC-09.2 | Этап 4 | preparePurchase, startPayment, getPayment, getSession, getPurchase, verifyPurchase, reprintTicket | Этап 4 |
+| БТ-03, БТ-06, БТ-07, БТ-10 | US-09, US-12, US-14, US-15 | AC-09.3 | Этап 4 | preparePurchase, startPayment, getPayment, getSession, getPurchase, verifyPurchase, reprintTicket, I-03 (талон и выдача), listProblems, acceptProblem, resolveProblem, getStaffSalesState, setSalesState, findPurchases, getStaffPurchase, recordImpossibility, registerExternalRefund, getRefund | Этап 4 |
 | БТ-06, БТ-07 | US-12, US-16 | AC-16.4 | Этап 4 | I-03 (талон и выдача), reprintTicket, listCells, serviceCell, acceptProblem | Этап 4 |
 | БТ-01, БТ-02, БТ-03, БТ-05, БТ-07 | US-01, US-09, US-10, US-14, US-17 | AC-17.2 | Этап 4 | startSession, getMenu, preparePurchase, startPayment, getPayment, getPurchase, verifyPurchase, reprintTicket, listProblems, acceptProblem, resolveProblem, getStaffSalesState, setSalesState, endSession, getSession, getSalesState | Этап 4 |
 | БТ-01, БТ-02, БТ-03, БТ-05, БТ-07 | US-01, US-09, US-14, US-17 | AC-17.3 | Этап 4 | startSession, getMenu, preparePurchase, startPayment, getPayment, getPurchase, verifyPurchase, reprintTicket, listProblems, acceptProblem, resolveProblem, getStaffSalesState, setSalesState, endSession, getSession, getSalesState | Этап 4 |
@@ -138,8 +138,8 @@ A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступн
 | US-06 | K-03 | replaceCart, startPayment |
 | US-07 | K-02 | getMenuItem, replaceCart |
 | US-08 | K-03 | preparePurchase |
-| US-09 | K-03–06, S-02 | preparePurchase, startPayment, getPayment, getPurchase, verifyPurchase, reprintTicket |
-| US-10 | K-04/06 | getPayment, getPurchase |
+| US-09 | K-03–06, S-02 | preparePurchase, startPayment, getPayment, getSession, getPurchase, verifyPurchase, reprintTicket |
+| US-10 | K-04/06 | getPayment, getSession, getPurchase |
 | US-11 | B-01 | getBoard, confirmBoardDisplay, getBoardDisplay |
 | US-12 | B-02, S-02 | I-03 (талон и выдача), reprintTicket |
 | US-13 | K-06, B-01/02 | getPurchase, getBoard; помощь в зале |
@@ -147,7 +147,7 @@ A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступн
 | US-15 | S-01/02 | findPurchases, getStaffPurchase, recordImpossibility, registerExternalRefund, getRefund |
 | US-16 | S-03 | listCells, serviceCell, acceptProblem |
 | US-17 | K-01/07, S-04 | endSession, getSession, getSalesState, setSalesState |
-| US-18 | R-01 | requestLoyaltyCode, confirmLoyalty |
+| US-18 | R-01/02 | requestLoyaltyCode, confirmLoyalty, preparePurchase |
 | US-19 | R-01/02 | confirmLoyalty, getLoyalty |
 | US-20 | R-02 | getLoyalty, preparePurchase |
 | US-21 | R-02, K-05 | getPurchase; I-07 начисление по оплате |
@@ -169,7 +169,7 @@ A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступн
 | Ветка и AC | Экран → операция | Данные/состояние → компонент/интеграция → результат и восстановление |
 |---|---|---|
 | Расчет и согласие, AC-05.1/08.1/09.1 | K-03 → replaceCart, preparePurchase, startPayment | Cart.version, Calculation, Reservation → C-01–04/I-01/02 → явное согласие, снимок до банка; конфликт требует перечитать |
-| Неизвестный платеж, AC-09.2/09.4/10.1 | K-04 → getPayment, getPurchase | PaymentAttempt.unknown, исходный резерв → C-03/04/08/I-01/02 → сверка каждые 10 с, менеджер через 1 мин; поздний успех без новой покупки, непригодность — полный возврат |
+| Неизвестный платеж, AC-09.2/09.4/10.1 | K-04 → getPayment, getSession, getPurchase | PaymentAttempt.unknown, исходный резерв → C-03/04/08/I-01/02 → сверка каждые 10 с, менеджер через 1 мин; поздний успех без новой покупки, непригодность — полный возврат |
 | Документы и помощь, AC-09.3/15.1/35.1 | K-05/06, S-02 → getStaffPurchase, verifyPurchase, reprintTicket | FiscalOperation, PrintTask, Problem → C-06/07/I-04/05 → тот же талон, независимый чек, повтор исходной команды |
 | Первое появление и доступ, AC-11.1/12.1 | B-01/02 → getBoard, confirmBoardDisplay, getBoardDisplay; I-03 | Версия проекции, CellAssignment.firstReadyAt/expiresAt → C-05/08/I-03 → 10 мин от первого показа; применение срока до доступа; сверка исходной версии |
 | Частичное получение, срок и контроль, AC-16.1–16.6 | B-02/S-03 → I-03, listCells, serviceCell | CellAssignment, Ticket, исправность/последовательность → C-05/07/I-03 → issued только по полному циклу; остаток сохраняет срок, неявка/неисправность требует обслуживания |
