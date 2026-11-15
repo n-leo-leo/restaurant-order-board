@@ -60,7 +60,7 @@ class Order {
 class OrderLine
 Restaurant "1" --> "0..*" TradingDay
 Restaurant "1" --> "1..*" Device
-TradingDay "1" --> "1" MenuVersion : uses
+TradingDay "0..*" --> "1" MenuVersion : uses
 Device "1" --> "0..*" Session : kiosk
 Session "1" *-- "1" Cart
 Cart "1" *-- "0..*" CartLine
@@ -91,7 +91,7 @@ class PrintTask
 class Ticket
 Order "1" --> "0..*" Reservation
 Order "1" --> "0..*" PaymentAttempt
-PaymentAttempt "1" --> "1" Reservation : uses
+PaymentAttempt "0..1" --> "1" Reservation : uses
 Order "1" --> "0..1" Refund
 Refund "0..1" --> "1" PaymentAttempt : successful
 Order "1" --> "0..*" FiscalOperation
@@ -147,7 +147,7 @@ Order "0..1" --> "0..*" DeliveryTask
 
 [Открыть схему в полном размере](../assets/stage2-class-diagram-5.svg).
 
-RobotRef и CellRef — ссылки на оборудование внешнего комплекса. История назначений ячейки сохраняется, одновременно активно только одно. Резервы могут пересоздаваться до оплаты; попытка использует один определенный резерв. Успешное списание по покупке не более одного. Возврат полный, повторные обращения относятся к одной операции.
+RobotRef и CellRef — ссылки на оборудование внешнего комплекса. История назначений ячейки сохраняется, одновременно активно только одно. Резерв создается до попытки и может остаться без нее. Каждая попытка использует один отдельный резерв; после отказа он освобождается, перед новой попыткой создается новый. Успешное списание по покупке не более одного. Возврат полный, повторные обращения относятся к одной операции.
 
 ## Первый релиз
 
