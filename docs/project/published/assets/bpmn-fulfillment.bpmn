@@ -27,12 +27,12 @@
       <bpmn:outgoing>Flow_bpmn-fulfillment_6</bpmn:outgoing>
       <bpmn:outgoing>Flow_bpmn-fulfillment_7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="p_cell" name="Роботы: разместить еду в ячейке">
+    <bpmn:task id="p_cell" name="Роботы: проверить ячейку и попытаться разместить еду">
       <bpmn:incoming>Flow_bpmn-fulfillment_3</bpmn:incoming>
       <bpmn:incoming>Flow_bpmn-fulfillment_6</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_8</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="p_cellok" name="Выдача доступна?" gatewayDirection="Diverging">
+    <bpmn:exclusiveGateway id="p_cellok" name="Размещение подтверждено, выдача доступна?" gatewayDirection="Diverging">
       <bpmn:incoming>Flow_bpmn-fulfillment_8</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_9</bpmn:outgoing>
       <bpmn:outgoing>Flow_bpmn-fulfillment_10</bpmn:outgoing>

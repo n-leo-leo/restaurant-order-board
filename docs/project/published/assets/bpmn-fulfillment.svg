@@ -48,10 +48,12 @@
 <text x="730.0" y="759.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
 <text x="730.0" y="694" text-anchor="middle" font-family="Arial" font-size="15">Резервный робот справился?</text>
 <rect x="130" y="820" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
-<text x="260.0" y="863.0" text-anchor="middle" font-family="Arial" font-size="15">Роботы: разместить еду в ячейке</text>
+<text x="260.0" y="845" text-anchor="middle" font-family="Arial" font-size="15">Роботы: проверить ячейку и</text>
+<text x="260.0" y="863" text-anchor="middle" font-family="Arial" font-size="15">попытаться разместить еду</text>
 <polygon points="260.0,1010 292,1042.0 260.0,1074 228,1042.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
 <text x="260.0" y="1049.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
-<text x="260.0" y="984" text-anchor="middle" font-family="Arial" font-size="15">Выдача доступна?</text>
+<text x="260.0" y="966" text-anchor="middle" font-family="Arial" font-size="15">Размещение подтверждено,</text>
+<text x="260.0" y="984" text-anchor="middle" font-family="Arial" font-size="15">выдача доступна?</text>
 <rect x="130" y="1200" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
 <text x="260.0" y="1234.0" text-anchor="middle" font-family="Arial" font-size="15">Система: показать «Готов» и</text>
 <text x="260.0" y="1252.0" text-anchor="middle" font-family="Arial" font-size="15">номер ячейки</text>
