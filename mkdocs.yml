@@ -53,3 +53,8 @@ nav:
       - Внешние системы: 04_architecture/integrations.md
       - Схемы интеграций: 04_architecture/integration-flows.md
       - Нагрузка и СУБД: 04_architecture/load-db.md
+  - 5. Интерфейсы и API:
+      - Интерфейсы и макеты: 05_api/ui.md
+      - Ресурсы и операции: 05_api/resources.md
+      - OpenAPI: 05_api/openapi.md
+      - Контракты адаптеров: 05_api/adapter-contracts.md

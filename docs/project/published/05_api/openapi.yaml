@@ -1,0 +1,4375 @@
+openapi: 3.0.3
+info:
+  title: Робот и точка — клиентский API
+  version: 2.0.0
+  description: Проектируемый контракт приложения для MVP и первого релиза R1. Не API поставщиков. x-release и x-roles
+    обязательны для каждой операции. История гостя, повтор заказа и отзывы исключены. Общие правила доступа, повторов
+    и восстановления — resources.md.
+servers:
+- url: https://restaurant.example/api/v1
+  description: Условный адрес проектируемого приложения
+tags:
+- name: MVP
+  description: Первая жизнеспособная версия
+- name: R1
+  description: Первый релиз после MVP
+paths:
+  /staff-sessions:
+    post:
+      operationId: loginStaff
+      summary: Вход сотрудника
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-14
+      - US-16
+      x-roles:
+      - anonymous
+      description: Вход сотрудника Ресторан определяется после входа; X-Restaurant-Id при входе не требуется.
+      security: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '201':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: &id001
+                type: string
+                minLength: 1
+                x-release: R1
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffLogin'
+  /staff-sessions/current:
+    delete:
+      operationId: logoutStaff
+      summary: Завершить личную сессию
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-14
+      x-roles:
+      - employee
+      description: Завершить личную сессию
+      security:
+      - staffAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+  /sessions:
+    post:
+      operationId: startSession
+      summary: Начать пустую сессию киоска
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-01
+      - US-17
+      x-roles:
+      - kiosk
+      description: Устройство привязано к ресторану. Запрещено при остановке продаж, занятом терминале или невыданных
+        документах без принятой менеджером проблемы.
+      security:
+      - deviceAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '201':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+  /sessions/current:
+    get:
+      operationId: getSession
+      summary: Восстановить текущую сессию после потери ответа
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-10
+      - US-17
+      x-roles:
+      - kiosk
+      description: Восстановить текущую сессию после потери ответа
+      security:
+      - deviceAuth: []
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+      parameters:
+      - &id002
+        name: X-Interaction-At
+        in: header
+        required: false
+        schema:
+          type: string
+          format: date-time
+        description: Последнее реальное действие гостя, не время фонового опроса. Киоск повторяет прежнее значение
+          при опросе. Сервер отклоняет будущее время и не продлевает бездействие из-за GET/304. Кнопка Продолжить
+          передает новое время через getSession. При начатом платеже сброс по бездействию отключен.
+  /sessions/current/end:
+    post:
+      operationId: endSession
+      summary: Очистить данные гостя
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-17
+      x-roles:
+      - guest
+      description: До платежа освобождается резерв. При processing/unknown сброс запрещен. После оплаты — только
+        выдан талон либо проблема принята менеджером; терминал безопасно свободен. Серверный таймер 2+2 мин действует
+        только до платежа.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - *id002
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+  /sales-state:
+    get:
+      operationId: getSalesState
+      summary: Режим и готовность продаж
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-01
+      - US-09
+      - US-17
+      x-roles:
+      - kiosk
+      description: Режим и готовность продаж
+      security:
+      - deviceAuth: []
+      parameters:
+      - name: If-None-Match
+        in: header
+        required: false
+        schema: *id001
+        description: Версия ранее полученной проекции
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleState'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '304':
+          description: Проекция не изменилась; проверка доступности успешна. Обновить время успешного опроса, не
+            время исходных данных.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /menu:
+    get:
+      operationId: getMenu
+      summary: Доступное меню текущего дня
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-01
+      - US-02
+      x-roles:
+      - guest
+      description: Только доступные позиции при известных актуальных остатках. Пустой каталог возвращает items=[].
+        Неизвестная актуальность запрещает новую оплату; 503. Опрос активного экрана каждые 0,5 с.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - name: If-None-Match
+        in: header
+        required: false
+        schema: *id001
+        description: Версия ранее полученной проекции
+      - *id002
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '304':
+          description: Проекция не изменилась; проверка доступности успешна. Обновить время успешного опроса, не
+            время исходных данных.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /menu/items/{menuEntryId}:
+    get:
+      operationId: getMenuItem
+      summary: Карточка блюда
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-03
+      - US-07
+      x-roles:
+      - guest
+      description: 404 — позиция больше не доступна в текущем меню; не добавлять ее в корзину.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - name: menuEntryId
+        in: path
+        required: true
+        schema: &id003
+          type: string
+          format: uuid
+      - *id002
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /cart:
+    get:
+      operationId: getCart
+      summary: Текущая корзина
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-04
+      - US-05
+      - US-06
+      x-roles:
+      - guest
+      description: Текущая корзина
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+      parameters:
+      - *id002
+    put:
+      operationId: replaceCart
+      summary: Изменить состав или тип обслуживания
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-04
+      - US-05
+      - US-06
+      - US-07
+      x-roles:
+      - guest
+      description: 'Полная замена состава с версией. Пустой список разрешен, quantity=0 не разрешен: удаление строки
+        через ее отсутствие. Сумму рассчитывает сервер. При processing/unknown изменение запрещено.'
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - *id002
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartInput'
+  /purchases:
+    post:
+      operationId: preparePurchase
+      summary: Рассчитать покупку и подготовить резерв
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-02
+      - US-08
+      - US-09
+      - US-20
+      - US-31
+      x-roles:
+      - guest
+      description: 'Сначала сохраняются снимок и намерение резерва. Сервер проверяет состав, тип, цены, скидки,
+        остатки и актуальность. Нет оплаты. Изменение относительно корзины требует явного согласия на K-03. previousPurchaseId
+        допустим только для своей покупки с безопасно завершенным платежом: неизмененный снимок после отказа сохраняет
+        purchaseId, получает новый резерв; измененный снимок — новый purchaseId. 202 с неизвестным резервом не разрешает
+        оплату; читать ту же покупку. Лояльность и подарок только R1.'
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - *id002
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Purchase'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrepareInput'
+  /purchases/{purchaseId}:
+    get:
+      operationId: getPurchase
+      summary: Состояние исходной покупки
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-09
+      - US-10
+      - US-35
+      - US-21
+      x-roles:
+      - guest
+      description: Доступ только своей текущей сессии; чужой UUID возвращает 404. Код талона не возвращается. Данные
+        принтера доставляются отдельным защищенным адаптером. В R1 loyaltyResult показывает начисление по исходной
+        покупке; unknown продолжает сверяться по bonusOperationId адаптера.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - *id002
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Purchase'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /purchases/{purchaseId}/payments:
+    post:
+      operationId: startPayment
+      summary: Подтвердить расчет и начать попытку оплаты
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-09
+      - US-10
+      - US-22
+      x-roles:
+      - guest
+      description: Атомарно проверить If-Match, calculationId, confirmedTotal, резерв, режим продаж и свободный
+        терминал; сохранить attemptId и связь с резервом до обращения к банку. Успешная регистрация возвращает 202,
+        а не обещание списания. cash только R1. Истекший резерв требует preparePurchase и подтверждения актуального
+        расчета. Неизвестный платеж блокирует новую попытку; после подтвержденного отказа нужен новый резерв.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - *id002
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentInput'
+  /payments/{attemptId}:
+    get:
+      operationId: getPayment
+      summary: Прочитать результат попытки
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-09
+      - US-10
+      - US-22
+      x-roles:
+      - guest
+      description: Своя покупка. Сервер сверяет unknown каждые 10 с, через 1 мин создает проблему. Повторное чтение
+        не создает платеж. Отказ — бизнесовый status=declined, HTTP 200.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - name: attemptId
+        in: path
+        required: true
+        schema: *id003
+      - *id002
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /payments/{attemptId}/cash-cancel:
+    post:
+      operationId: cancelCashPayment
+      summary: Вернуть неполную наличную сумму
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-22
+      x-roles:
+      - guest
+      description: Только до подтвержденной полной оплаты; исходный attemptId, возврат всех внесенных денег устройством.
+        Неизвестный возврат блокирует следующую оплату до сверки.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - name: attemptId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - *id002
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+  /board:
+    get:
+      operationId: getBoard
+      summary: Две колонки публичного табло
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-11
+      - US-12
+      x-roles:
+      - board
+      description: Ресторан из устройства. Опрос 0,5 с. Проблемные, выданные, отмененные и no_show скрыты. awaiting_placement
+        остается в preparing. При fresh=false скрыть номера и показать помощь; ошибка связи не разрешает оставлять
+        старое обещание выдачи.
+      security:
+      - deviceAuth: []
+      parameters:
+      - name: If-None-Match
+        in: header
+        required: false
+        schema: *id001
+        description: Версия ранее полученной проекции
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Board'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '304':
+          description: Проекция не изменилась; проверка доступности успешна. Обновить время успешного опроса, не
+            время исходных данных.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /board/display-confirmations:
+    post:
+      operationId: confirmBoardDisplay
+      summary: Подтвердить первый показ ready-назначений
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-11
+      - US-12
+      x-roles:
+      - board
+      description: Сверить назначение и версию, действительно выданные этому табло. Одной транзакцией сохранить
+        firstReadyAt и expiresAt=firstReadyAt+10 мин и задачу установки срока. Повтор никогда не меняет первое время.
+        Позднее подтверждение исходной версии не возвращает снятый номер и не дает доступ после срока.
+      security:
+      - deviceAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplayRecord'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisplayAck'
+  /board/display-confirmations/{projectionVersion}:
+    get:
+      operationId: getBoardDisplay
+      summary: Сверить подтверждение исходной версии
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-11
+      - US-12
+      x-roles:
+      - board
+      description: '404 означает отсутствие сохраненного подтверждения, а не разрешение нового таймера: повторить
+        confirmBoardDisplay с исходными данными.'
+      security:
+      - deviceAuth: []
+      parameters:
+      - name: projectionVersion
+        in: path
+        required: true
+        schema: &id005
+          type: integer
+          minimum: 1
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplayRecord'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/problems:
+    get:
+      operationId: listProblems
+      summary: Проблемы текущего ресторана
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-14
+      - US-16
+      x-roles:
+      - manager
+      - hall
+      description: Менеджер видит проблемы покупок; сотрудник зала только ячейки без данных оплаты. Звук и выделение
+        до принятия. Опрос активного экрана 0,5 с; принятие в течение 1 мин от доставки.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema: *id001
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problems'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/problems/{problemId}:
+    get:
+      operationId: getProblem
+      summary: Открыть проблему
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-14
+      - US-15
+      - US-16
+      x-roles:
+      - manager
+      - hall
+      description: Открыть проблему
+      security:
+      - staffAuth: []
+      parameters:
+      - name: problemId
+        in: path
+        required: true
+        schema: *id003
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/problems/{problemId}/accept:
+    post:
+      operationId: acceptProblem
+      summary: Принять проблему под личной записью
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-14
+      - US-16
+      x-roles:
+      - manager
+      - hall
+      description: Роль и ресторан проверяются. Сотрудник зала принимает только обслуживание ячеек; принятие им
+        не разрешает сброс киоска при сбое документов.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: problemId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+  /staff/problems/{problemId}/resolution:
+    post:
+      operationId: resolveProblem
+      summary: Зафиксировать результат разбора
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-14
+      - US-15
+      - US-16
+      x-roles:
+      - manager
+      - hall
+      description: Для ячеек — только доступный сотруднику результат обслуживания. Восстановление рабочего этапа
+        допускается по проверенным фактам комплекса; произвольная установка ready/issued запрещена. Отмена не означает
+        подтвержденный возврат.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: problemId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resolution'
+  /staff/purchases:
+    get:
+      operationId: findPurchases
+      summary: Поиск покупок
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-15
+      - US-23
+      x-roles:
+      - manager
+      description: 'MVP: обязательны ресторан+день+точный номер, без широкого списка; альтернативно покупка из проблемы.
+        R1: период [from,to), фильтры оплаты и заказа, курсор. Ресторан проверяется по личным правам. История гостя
+        не добавляется.'
+      security:
+      - staffAuth: []
+      parameters:
+      - name: restaurantId
+        in: query
+        required: true
+        schema: *id003
+      - name: tradingDayId
+        in: query
+        required: false
+        schema: *id003
+      - name: orderNumber
+        in: query
+        required: false
+        schema: *id001
+      - name: from
+        in: query
+        required: false
+        schema: &id004
+          type: string
+          format: date-time
+          description: Срок токена сессии, не отмена платежа. Для незавершенной защищенной сессии сервер обеспечивает
+            продолжение доступа исходного киоска; при восстановлении используется getSession.
+      - name: to
+        in: query
+        required: false
+        schema: *id004
+      - name: paymentStatus
+        in: query
+        required: false
+        schema: &id007
+          type: string
+          enum:
+          - created
+          - processing
+          - succeeded
+          - declined
+          - unknown
+      - name: orderState
+        in: query
+        required: false
+        schema: &id008
+          type: string
+          enum:
+          - awaiting_payment
+          - paid
+          - preparing
+          - awaiting_placement
+          - ready
+          - problem
+          - issued
+          - no_show
+          - cancelled
+      - name: cursor
+        in: query
+        required: false
+        schema: *id001
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Purchases'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/purchases/{purchaseId}:
+    get:
+      operationId: getStaffPurchase
+      summary: Просмотр покупки менеджером
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-15
+      - US-23
+      - US-35
+      x-roles:
+      - manager
+      description: Просмотр покупки менеджером
+      security:
+      - staffAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Purchase'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/purchases/{purchaseId}/verifications:
+    post:
+      operationId: verifyPurchase
+      summary: Проверить покупку перед восстановлением талона
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-09
+      - US-15
+      x-roles:
+      - manager
+      description: Менеджер сопоставляет подтверждение платежа с сохраненными киоском, временем, составом и суммой.
+        Сервер проверяет успешную оплату; verificationId связан с покупкой и личной записью. Публичного номера недостаточно.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResult'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Verification'
+  /staff/purchases/{purchaseId}/ticket-reprints:
+    post:
+      operationId: reprintTicket
+      summary: Повторно напечатать исходный талон
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-09
+      - US-12
+      - US-15
+      x-roles:
+      - manager
+      description: Требуются verificationId этой покупки и менеджера, исправный принтер того же ресторана, действующий
+        талон и допустимая выдача. После issued/cancelled/no_show или expiresAt запрещено. Код и номер прежние;
+        нет нового задания кухни/платежа. Аудит без кода. Результат копии отражается в getStaffPurchase.documents.ticketPrintStatus;
+        при unknown читать исходную покупку, не запускать новую копию.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reprint'
+  /staff/purchases/{purchaseId}/impossibility:
+    post:
+      operationId: recordImpossibility
+      summary: Зафиксировать невозможность выполнения
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-15
+      x-roles:
+      - manager
+      description: 'MVP: проверенная невозможность выполнения, не просьба гостя. Сохраняются отмена и потребность
+        полного внешнего возврата; комплексу передается запрет новых действий. Уже выданный заказ не переводится
+        назад, возврат по подтвержденной проблеме учитывается отдельно.'
+      security:
+      - staffAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Purchase'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reason'
+  /staff/purchases/{purchaseId}/external-refunds:
+    post:
+      operationId: registerExternalRefund
+      summary: Зарегистрировать внешний полный возврат для сверки
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-15
+      - US-25
+      x-roles:
+      - manager
+      description: 'MVP: возврат инициирован менеджером внешними средствами. R1 также фиксирует наличную выдачу.
+        Отметка не дает confirmed; сверить провайдера, полную сумму, исходную оплату и кассу. Повтор ID не увеличивает
+        сумму.'
+      security:
+      - staffAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalRefund'
+  /staff/purchases/{purchaseId}/cancellation:
+    post:
+      operationId: cancelOrder
+      summary: Отменить выполнение заказа
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-24
+      - US-25
+      x-roles:
+      - manager
+      description: До начала приготовления допустима просьба гостя; после начала — невозможность выполнения или
+        подтвержденная проблема. Блокирует новые задания и доступ, сохраняет отдельное обязательство возврата. Не
+        объявляет безопасную операцию физически остановленной без подтверждения комплекса.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Purchase'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reason'
+  /staff/purchases/{purchaseId}/refunds:
+    post:
+      operationId: startRefund
+      summary: Инициировать полный возврат
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-24
+      - US-25
+      x-roles:
+      - manager
+      description: 'Полная денежная сумма исходной успешной оплаты, без поля частичной суммы. Допустимая отмена
+        или подтвержденная проблема; для issued факт выдачи сохраняется. Неизвестный результат сверяется. Наличные:
+        выдача сотрудником и подтверждение внешнего контура; бонусы отменяются/восстанавливаются по A-10.'
+      security:
+      - staffAuth: []
+      parameters:
+      - name: purchaseId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reason'
+  /staff/refunds/{refundId}:
+    get:
+      operationId: getRefund
+      summary: Контроль возврата и его чека
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-15
+      - US-24
+      - US-25
+      x-roles:
+      - manager
+      description: Контроль возврата и его чека
+      security:
+      - staffAuth: []
+      parameters:
+      - name: refundId
+        in: path
+        required: true
+        schema: *id003
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/cells:
+    get:
+      operationId: listCells
+      summary: Проблемные ячейки и задачи уборки
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-16
+      x-roles:
+      - manager
+      - hall
+      description: Только свой ресторан и необходимые для обслуживания данные. Нет управления опасными движениями
+        комплекса.
+      security:
+      - staffAuth: []
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cells'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+      parameters:
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+  /staff/cells/{cellId}/service:
+    post:
+      operationId: serviceCell
+      summary: Зафиксировать обслуживание ячейки
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-16
+      x-roles:
+      - manager
+      - hall
+      description: Обработчик сверяет назначение, закрытие, исправность и стабильную пустоту. До подтверждения ячейка
+        blocked/checking; уборка не меняет заказ на issued. Чтение результата выполняется через listCells по cellId,
+        неизвестное назначение не освобождается.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: cellId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cell'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CellService'
+  /staff/sales-state:
+    get:
+      operationId: getStaffSalesState
+      summary: Режим продаж и начатые операции
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-14
+      - US-17
+      x-roles:
+      - manager
+      description: Режим продаж и начатые операции
+      security:
+      - staffAuth: []
+      parameters:
+      - name: If-None-Match
+        in: header
+        required: false
+        schema: *id001
+        description: Версия ранее полученной проекции
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleState'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '304':
+          description: Проекция не изменилась; проверка доступности успешна. Обновить время успешного опроса, не
+            время исходных данных.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+    put:
+      operationId: setSalesState
+      summary: Остановить или возобновить продажи
+      tags:
+      - MVP
+      x-release: MVP
+      x-stories:
+      - US-01
+      - US-09
+      - US-10
+      - US-14
+      - US-17
+      x-roles:
+      - manager
+      description: Упорядочено с регистрацией попытки по ресторану. stop сбрасывает только неоплаченные корзины
+        после сообщения, освобождает их резервы. Начатые оплаты сверяются, оплаченные выполняются или возвращаются.
+        resume только после всех успешных проверок; связь не снимает manualStop. Отключение допустимо только по
+        safeToPowerOff и порядку A-15.
+      security:
+      - staffAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleState'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleCommand'
+  /loyalty/challenges:
+    post:
+      operationId: requestLoyaltyCode
+      summary: Запросить SMS для регистрации или входа
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-18
+      - US-19
+      x-roles:
+      - guest
+      description: Запросить SMS для регистрации или входа
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - *id002
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Challenge'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChallengeInput'
+  /loyalty/session:
+    post:
+      operationId: confirmLoyalty
+      summary: Подтвердить телефон и войти или зарегистрироваться
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-18
+      - US-19
+      x-roles:
+      - guest
+      description: 'Регистрация: имя и дата рождения обязательны, email по желанию. Существующий профиль не создается
+        повторно: предложить login. Неверный/истекший код CODE_INVALID, лимит 429; корзина сохраняется.'
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - *id002
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loyalty'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoyaltyConfirm'
+    get:
+      operationId: getLoyalty
+      summary: Баланс текущего профиля
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-19
+      - US-20
+      x-roles:
+      - guest
+      description: Только профиль, привязанный к текущей киоск-сессии. Ошибка лояльности позволяет отказаться от
+        бонусов и заново подтвердить обычную покупку.
+      security:
+      - deviceAuth: []
+        sessionAuth: []
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Loyalty'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+      parameters:
+      - *id002
+  /staff/notifications:
+    get:
+      operationId: listNotifications
+      summary: Снятия блюд и технические ошибки
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-26
+      x-roles:
+      - manager
+      description: Снятия блюд и технические ошибки
+      security:
+      - staffAuth: []
+      parameters:
+      - name: cursor
+        in: query
+        required: false
+        schema: *id001
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notifications'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/menu-draft:
+    get:
+      operationId: getMenuDraft
+      summary: Меню следующего торгового дня
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-27
+      - US-28
+      - US-29
+      - US-30
+      x-roles:
+      - assortment
+      - technologist
+      description: Меню следующего торгового дня Технолог читает список блюд для выбора техкарты без права изменения
+        меню.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: If-None-Match
+        in: header
+        required: false
+        schema: *id001
+        description: Версия ранее полученной проекции
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuDraft'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '304':
+          description: Проекция не изменилась; проверка доступности успешна. Обновить время успешного опроса, не
+            время исходных данных.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/menu-draft/items/{menuEntryId}:
+    put:
+      operationId: saveMenuEntry
+      summary: Сохранить позицию или цену будущего дня
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-27
+      - US-28
+      x-roles:
+      - assortment
+      description: Клиент задает UUID новой позиции. Сервер проверяет поля и ссылки. If-Match — версия черновика.
+        Текущий день и оплаченные снимки не меняются.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: menuEntryId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuDraft'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuEntryEdit'
+  /staff/menu-draft/promotions/{promotionId}:
+    put:
+      operationId: savePromotion
+      summary: Сохранить акцию и состав комбо будущего дня
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-29
+      - US-31
+      x-roles:
+      - assortment
+      description: promotionId тела совпадает с путем. Условия, исключения, периоды и состав проверяются. Комбо
+        редактируется saveMenuEntry. Применение со следующего торгового дня.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: promotionId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuDraft'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Promotion'
+  /staff/recipes/{dishId}:
+    get:
+      operationId: getRecipe
+      summary: Будущая техкарта блюда
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-30
+      x-roles:
+      - technologist
+      description: Будущая техкарта блюда
+      security:
+      - staffAuth: []
+      parameters:
+      - name: dishId
+        in: path
+        required: true
+        schema: *id003
+      - name: If-None-Match
+        in: header
+        required: false
+        schema: *id001
+        description: Версия ранее полученной проекции
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '304':
+          description: Проекция не изменилась; проверка доступности успешна. Обновить время успешного опроса, не
+            время исходных данных.
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+    put:
+      operationId: saveRecipe
+      summary: Сохранить новую версию техкарты
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-30
+      x-roles:
+      - technologist
+      description: dishId совпадает с путем. Положительные количества и согласованные параметры комплекса; при неизвестной
+        совместимости применение запрещено. Версия со следующего дня, существующая неизменна. Для создания при отсутствии
+        карты If-Match имеет значение "0" (ожидается отсутствие); для изменения — ETag прочитанной карты. recipeVersionId
+        в запросе — новый UUID неизменяемой версии; version соответствует If-Match, сервер назначает следующий номер.
+        Повтор с тем же ключом не создает еще одну версию. Подтвержденная новая версия связывается сервером с позицией
+        будущего дня; версии действующих покупок не меняются.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: dishId
+        in: path
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/IfMatch'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+  /staff/production:
+    get:
+      operationId: getProduction
+      summary: Монитор роботов и пополнения
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-32
+      - US-33
+      x-roles:
+      - production
+      description: Обновление не реже 30 с. asOf/fresh видны сотруднику, устаревшие данные явно помечены; приложение
+        не создает складские заявки.
+      security:
+      - staffAuth: []
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Production'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+      parameters:
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+  /staff/reports/sales:
+    get:
+      operationId: getSalesReport
+      summary: Отчет по продажам и возвратам
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-34
+      x-roles:
+      - analyst
+      description: Период [from,to), from<to. Возврат датой подтверждения со ссылкой на исходный заказ. Итог деньги
+        минус подтвержденные возвраты. Бонусы отдельным числом.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: restaurantId
+        in: query
+        required: true
+        schema: *id003
+      - name: from
+        in: query
+        required: true
+        schema: *id004
+      - name: to
+        in: query
+        required: true
+        schema: *id004
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/exports:
+    post:
+      operationId: createExport
+      summary: Передать закрытый день в 1С
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-34
+      x-roles:
+      - analyst
+      description: Только закрытый день. Повтор для того же дня возвращает исходный пакет с постоянными ID строк.
+        Сбой 1С не блокирует продажи.
+      security:
+      - staffAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '202':
+          description: Операция сохранена; при pending/unknown читать состояние исходного ресурса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Export'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+        '412':
+          $ref: '#/components/responses/412'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportInput'
+  /staff/exports/{exportId}:
+    get:
+      operationId: getExport
+      summary: Состояние передачи в 1С
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-34
+      x-roles:
+      - analyst
+      description: Состояние передачи в 1С
+      security:
+      - staffAuth: []
+      parameters:
+      - name: exportId
+        in: path
+        required: true
+        schema: *id003
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Export'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema: *id001
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+  /staff/ingredients:
+    get:
+      operationId: getIngredients
+      summary: Ингредиенты для выбора в техкарте
+      tags:
+      - R1
+      x-release: R1
+      x-stories:
+      - US-30
+      x-roles:
+      - technologist
+      description: Справочник имен, внешних ссылок и единиц для технолога своего ресторана. Пустой items — нет доступных
+        справочных записей; сбой загрузки — 503, не пустой успешный ответ.
+      security:
+      - staffAuth: []
+      responses:
+        '200':
+          description: Сохраненный результат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngredientCatalog'
+          headers:
+            ETag:
+              description: Версия ресурса, если у ресурса есть поле version
+              schema:
+                type: string
+                minLength: 1
+                x-release: R1
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
+      parameters:
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Рабочий ресторан; проверяется по правам сотрудника.
+components:
+  securitySchemes:
+    deviceAuth:
+      type: http
+      scheme: bearer
+      description: Сертификат/секрет регистрации обменивается защищенным каналом на токен устройства с deviceId,
+        restaurantId и типом. Процедура выдачи относится к эксплуатации.
+    sessionAuth:
+      type: apiKey
+      in: header
+      name: X-Session-Token
+      description: Непредсказуемый секрет текущей сессии, привязан к киоску. Вместе с deviceAuth. UUID покупки не
+        секрет доступа.
+    staffAuth:
+      type: http
+      scheme: bearer
+      description: 'Личная сессия сотрудника: employeeId, роли и разрешенные рестораны. Для нескольких ресторанов
+        X-Restaurant-Id обязателен.'
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: *id003
+      description: 'Постоянный ID команды. Область: субъект+ресторан+operationId. Повтор того же тела возвращает
+        исходный ресурс; другое тело с тем же ключом — 409 IDEMPOTENCY_CONFLICT. Проверка повтора предшествует If-Match.'
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema: *id001
+      description: Версия изменяемого ресурса (для корзины Cart.version, продажи SaleState.version, заказа Purchase.version,
+        проблемы Problem.version, ячейки Cell.version, редактора версия черновика/техкарты). Устаревшая — 412.
+  responses:
+    '400':
+      description: 'VALIDATION: неверная структура или обязательные поля'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '401':
+      description: 'UNAUTHENTICATED: вход/токен недействителен'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '403':
+      description: 'FORBIDDEN: нет роли, устройства или права ресторана'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '404':
+      description: 'NOT_FOUND: ресурс отсутствует либо чужой'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '409':
+      description: 'Конфликт состояния. Error.code: ITEM_UNAVAILABLE, RECONFIRM_REQUIRED, SALES_BLOCKED, PAYMENT_UNRESOLVED,
+        RESERVATION_UNRESOLVED, RESERVATION_EXPIRED, DEVICE_BUSY, ACTION_FORBIDDEN или IDEMPOTENCY_CONFLICT; восстановление
+        — resources.md.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '412':
+      description: 'VERSION_CONFLICT: перечитать ресурс и повторно проверить действие'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '422':
+      description: 'Бизнесовые данные недопустимы: VALIDATION, CODE_INVALID, PURCHASE_NOT_VERIFIED или LOYALTY_UNAVAILABLE'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    '429':
+      description: 'RATE_LIMITED: соблюдать Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      headers:
+        Retry-After:
+          description: Секунды до допустимого повтора
+          schema:
+            type: integer
+            minimum: 1
+    '503':
+      description: 'DEPENDENCY_UNAVAILABLE: результат команды мог сохраниться; сверить исходный ID/ключ'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      required:
+      - code
+      - message
+      - correlationId
+      - retryable
+      properties:
+        code:
+          type: string
+          enum:
+          - VALIDATION
+          - UNAUTHENTICATED
+          - FORBIDDEN
+          - NOT_FOUND
+          - VERSION_CONFLICT
+          - IDEMPOTENCY_CONFLICT
+          - ITEM_UNAVAILABLE
+          - RECONFIRM_REQUIRED
+          - SALES_BLOCKED
+          - PAYMENT_UNRESOLVED
+          - RESERVATION_UNRESOLVED
+          - RESERVATION_EXPIRED
+          - DEVICE_BUSY
+          - ACTION_FORBIDDEN
+          - PURCHASE_NOT_VERIFIED
+          - LOYALTY_UNAVAILABLE
+          - CODE_INVALID
+          - CASH_UNAVAILABLE
+          - DEPENDENCY_UNAVAILABLE
+          - RATE_LIMITED
+        message: *id001
+        correlationId: *id003
+        resourceId: *id003
+        currentVersion: *id005
+        retryable:
+          type: boolean
+    Token:
+      type: object
+      additionalProperties: false
+      required:
+      - token
+      - expiresAt
+      - subjectId
+      - roles
+      - restaurants
+      properties:
+        token: *id001
+        expiresAt: *id004
+        subjectId: *id003
+        roles:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum:
+            - manager
+            - hall
+            - assortment
+            - technologist
+            - production
+            - analyst
+        restaurants:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - restaurantId
+            - name
+            properties:
+              restaurantId:
+                type: string
+                format: uuid
+              name:
+                type: string
+                minLength: 1
+    StaffLogin:
+      type: object
+      additionalProperties: false
+      required:
+      - login
+      - password
+      properties:
+        login: *id001
+        password:
+          type: string
+          minLength: 1
+          writeOnly: true
+    Session:
+      type: object
+      additionalProperties: false
+      required:
+      - sessionId
+      - token
+      - expiresAt
+      - state
+      - allowedActions
+      properties:
+        sessionId: *id003
+        token: *id001
+        expiresAt: *id004
+        state:
+          type: string
+          enum:
+          - active
+          - payment_locked
+          - documents_locked
+          - closed
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - edit_cart
+            - prepare_purchase
+            - pay
+            - end_session
+            - wait
+            - contact_manager
+    SaleState:
+      type: object
+      additionalProperties: false
+      required:
+      - restaurantId
+      - version
+      - manualStop
+      - technicalReady
+      - newSalesAllowed
+      - checkedAt
+      - pendingPayments
+      - activeOrders
+      - unconfirmedRefunds
+      - safeToPowerOff
+      properties:
+        restaurantId: *id003
+        tradingDayId: *id003
+        version: *id005
+        manualStop:
+          type: boolean
+        technicalReady:
+          type: boolean
+        newSalesAllowed:
+          type: boolean
+        reason: *id001
+        checkedAt: *id004
+        pendingPayments:
+          type: integer
+          minimum: 0
+        activeOrders:
+          type: integer
+          minimum: 0
+        unconfirmedRefunds:
+          type: integer
+          minimum: 0
+        safeToPowerOff:
+          type: boolean
+    MenuItem:
+      type: object
+      additionalProperties: false
+      required:
+      - menuEntryId
+      - dishId
+      - categoryId
+      - name
+      - composition
+      - weightGrams
+      - allergens
+      - price
+      - currency
+      - kind
+      - upsellEntryIds
+      properties:
+        menuEntryId: *id003
+        dishId: *id003
+        categoryId: *id003
+        name: *id001
+        description: *id001
+        composition: *id001
+        weightGrams:
+          type: integer
+          minimum: 1
+        allergens:
+          type: array
+          items: *id001
+        price: &id006
+          type: integer
+          minimum: 0
+          description: Целые копейки RUB. Рассчитывает сервер.
+          x-release: R1
+        currency:
+          type: string
+          enum:
+          - RUB
+        kind:
+          type: string
+          enum:
+          - regular
+          - combo
+        photoUrl:
+          type: string
+          format: uri
+        upsellEntryIds:
+          type: array
+          items: *id003
+    Menu:
+      type: object
+      additionalProperties: false
+      required:
+      - restaurantId
+      - tradingDayId
+      - menuVersionId
+      - version
+      - asOf
+      - fresh
+      - categories
+      - items
+      - sales
+      properties:
+        restaurantId: *id003
+        tradingDayId: *id003
+        menuVersionId: *id003
+        version: *id005
+        asOf: *id004
+        fresh:
+          type: boolean
+        categories:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - categoryId
+            - name
+            - position
+            properties:
+              categoryId: *id003
+              name: *id001
+              position:
+                type: integer
+                minimum: 0
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+        sales:
+          $ref: '#/components/schemas/SaleState'
+    CartLine:
+      type: object
+      additionalProperties: false
+      required:
+      - menuEntryId
+      - quantity
+      properties:
+        menuEntryId: *id003
+        quantity:
+          type: integer
+          minimum: 1
+    CartInput:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartLine'
+        fulfillmentType:
+          type: string
+          enum:
+          - dine_in
+          - takeaway
+      description: menuEntryId не повторяется в items; количество положительное целое. Без выбранного fulfillmentType
+        корзина допустима, платеж запрещен.
+    Cart:
+      type: object
+      additionalProperties: false
+      required:
+      - version
+      - items
+      - estimatedTotal
+      - currency
+      - warnings
+      properties:
+        version: *id005
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartLine'
+        fulfillmentType:
+          type: string
+          enum:
+          - dine_in
+          - takeaway
+        estimatedTotal: *id006
+        currency:
+          type: string
+          enum:
+          - RUB
+        warnings:
+          type: array
+          items:
+            type: string
+            enum:
+            - ITEM_UNAVAILABLE
+            - PRICE_CHANGED
+            - SALES_BLOCKED
+    SnapshotLine:
+      type: object
+      additionalProperties: false
+      required:
+      - lineId
+      - menuEntryId
+      - recipeVersionId
+      - name
+      - quantity
+      - unitPrice
+      - discount
+      - total
+      - comboComponents
+      properties:
+        lineId: *id003
+        menuEntryId: *id003
+        recipeVersionId: *id003
+        name: *id001
+        quantity:
+          type: integer
+          minimum: 1
+        unitPrice: *id006
+        discount: *id006
+        total: *id006
+        comboComponents:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - dishId
+            - name
+            - quantity
+            properties:
+              dishId: *id003
+              name: *id001
+              quantity:
+                type: integer
+                minimum: 1
+    Calculation:
+      type: object
+      additionalProperties: false
+      required:
+      - calculationId
+      - menuVersionId
+      - calculatedAt
+      - lines
+      - subtotal
+      - discount
+      - afterDiscount
+      - bonusSpent
+      - total
+      - currency
+      - gift
+      - promotionRuleIds
+      properties:
+        calculationId: *id003
+        menuVersionId: *id003
+        calculatedAt: *id004
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SnapshotLine'
+          minItems: 1
+        subtotal: *id006
+        discount: *id006
+        afterDiscount: *id006
+        bonusSpent:
+          type: integer
+          minimum: 0
+          x-release: R1
+          description: В MVP всегда 0; списание только R1. Целое число бонусов, не копеек; денежный эквивалент умножается
+            на 100.
+        total: *id006
+        currency:
+          type: string
+          enum:
+          - RUB
+        gift:
+          type: string
+          enum:
+          - not_in_release
+          - none
+          - glass_reserved
+          x-release: R1
+          description: В MVP всегда not_in_release; остальные значения только R1.
+        promotionRuleIds:
+          type: array
+          items: *id003
+    Reservation:
+      type: object
+      additionalProperties: false
+      required:
+      - reservationId
+      - status
+      - fitness
+      properties:
+        reservationId: *id003
+        status:
+          type: string
+          enum:
+          - creating
+          - active
+          - committed
+          - used
+          - released
+          - expired
+          - unknown
+        fitness:
+          type: string
+          enum:
+          - fit
+          - unfit
+          - unknown
+        expiresBeforePaymentAt: *id004
+    DocumentState:
+      type: object
+      additionalProperties: false
+      required:
+      - fiscalStatus
+      - receiptPrintStatus
+      - ticketPrintStatus
+      properties:
+        fiscalOperationId: *id003
+        fiscalStatus:
+          type: string
+          enum:
+          - pending
+          - confirmed
+          - unknown
+          - failed
+        receiptPrintStatus:
+          type: string
+          enum:
+          - pending
+          - printed
+          - unknown
+          - failed
+        ticketPrintStatus:
+          type: string
+          enum:
+          - pending
+          - printed
+          - unknown
+          - failed
+        problemId: *id003
+    Payment:
+      type: object
+      additionalProperties: false
+      required:
+      - attemptId
+      - purchaseId
+      - reservationId
+      - method
+      - status
+      - amount
+      - currency
+      - startedAt
+      properties:
+        attemptId: *id003
+        purchaseId: *id003
+        reservationId: *id003
+        method:
+          type: string
+          enum:
+          - card
+          - cash
+        status: *id007
+        amount: *id006
+        currency:
+          type: string
+          enum:
+          - RUB
+        startedAt: *id004
+        resolvedAt: *id004
+        nextReconcileAt: *id004
+        externalPaymentId: *id001
+        insertedAmount: *id006
+        changeAmount: *id006
+        cashReturnStatus:
+          type: string
+          enum:
+          - not_required
+          - pending
+          - confirmed
+          - unknown
+          - failed
+          x-release: R1
+    Refund:
+      type: object
+      additionalProperties: false
+      required:
+      - refundId
+      - purchaseId
+      - attemptId
+      - amount
+      - currency
+      - status
+      - fiscalStatus
+      - bonusReversalStatus
+      - reason
+      properties:
+        refundId: *id003
+        purchaseId: *id003
+        attemptId: *id003
+        amount: *id006
+        currency:
+          type: string
+          enum:
+          - RUB
+        status:
+          type: string
+          enum:
+          - required
+          - processing
+          - confirmed
+          - unknown
+          - declined
+        externalRefundId: *id001
+        confirmedAt: *id004
+        fiscalStatus:
+          type: string
+          enum:
+          - pending
+          - confirmed
+          - unknown
+          - failed
+        bonusReversalStatus:
+          type: string
+          enum:
+          - not_required
+          - pending
+          - confirmed
+          - unknown
+          - failed
+        reason:
+          type: string
+          minLength: 1
+    Purchase:
+      type: object
+      additionalProperties: false
+      required:
+      - purchaseId
+      - restaurantId
+      - tradingDayId
+      - version
+      - createdAt
+      - fulfillmentType
+      - state
+      - calculation
+      - requiresConfirmation
+      - allowedActions
+      properties:
+        purchaseId: *id003
+        restaurantId: *id003
+        tradingDayId: *id003
+        version: *id005
+        createdAt: *id004
+        fulfillmentType:
+          type: string
+          enum:
+          - dine_in
+          - takeaway
+        state: *id008
+        calculation:
+          $ref: '#/components/schemas/Calculation'
+        reservation:
+          $ref: '#/components/schemas/Reservation'
+        requiresConfirmation:
+          type: boolean
+        orderNumber: *id001
+        payment:
+          $ref: '#/components/schemas/Payment'
+        refund:
+          $ref: '#/components/schemas/Refund'
+        documents:
+          $ref: '#/components/schemas/DocumentState'
+        cellNumber: *id001
+        firstReadyAt: *id004
+        expiresAt: *id004
+        allowedActions:
+          type: array
+          items:
+            type: string
+            enum:
+            - reprepare
+            - confirm_and_pay
+            - wait
+            - contact_manager
+            - verify_purchase
+            - reprint_ticket
+            - record_impossibility
+            - register_external_refund
+            - cancel_order
+            - start_refund
+          description: Только действия текущего субъекта. Гость никогда не получает команды сотрудника.
+        loyaltyResult:
+          type: object
+          x-release: R1
+          additionalProperties: false
+          required:
+          - earnedBonuses
+          - accrualStatus
+          properties:
+            earnedBonuses:
+              type: integer
+              minimum: 0
+            accrualStatus:
+              type: string
+              enum:
+              - not_required
+              - pending
+              - confirmed
+              - unknown
+              - failed
+    PrepareInput:
+      type: object
+      additionalProperties: false
+      required:
+      - cartVersion
+      properties:
+        cartVersion: *id005
+        previousPurchaseId: *id003
+        loyaltyToken: *id001
+        bonusToSpend:
+          type: integer
+          minimum: 0
+          x-release: R1
+    PaymentInput:
+      type: object
+      additionalProperties: false
+      required:
+      - calculationId
+      - reservationId
+      - confirmedTotal
+      - method
+      properties:
+        calculationId: *id003
+        reservationId: *id003
+        confirmedTotal: *id006
+        method:
+          type: string
+          enum:
+          - card
+          - cash
+      description: confirmedTotal — проверка согласия, не источник расчета. cash только R1; лояльность не отдельный
+        способ оплаты.
+    BoardRow:
+      type: object
+      additionalProperties: false
+      required:
+      - orderNumber
+      properties:
+        orderNumber: *id001
+      description: 'Публичная строка Готовится: только номер заказа.'
+    Board:
+      type: object
+      additionalProperties: false
+      required:
+      - version
+      - asOf
+      - fresh
+      - preparing
+      - ready
+      - helpText
+      properties:
+        version: *id005
+        asOf: *id004
+        fresh:
+          type: boolean
+        preparing:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoardRow'
+        ready:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - orderNumber
+            - assignmentId
+            - cellNumber
+            properties:
+              orderNumber:
+                type: string
+                minLength: 1
+              assignmentId:
+                type: string
+                format: uuid
+              cellNumber:
+                type: string
+                minLength: 1
+        helpText: *id001
+      description: Только публичная проекция. В ready обязательны assignmentId и cellNumber. purchaseId, код талона,
+        состав и оплата отсутствуют. При fresh=false оба списка пусты; недоступность нельзя выдавать за свежий пустой
+        результат.
+    DisplayAck:
+      type: object
+      additionalProperties: false
+      required:
+      - projectionVersion
+      - firstDisplayedAt
+      - assignmentIds
+      properties:
+        projectionVersion: *id005
+        firstDisplayedAt: *id004
+        assignmentIds:
+          type: array
+          items: *id003
+          minItems: 1
+      description: Табло подтверждает реально показанные ready-назначения выданной ему версии. Первый показ каждого
+        назначения сохраняется навсегда; часы устройства проверяются, неверное время отклоняется.
+    DisplayRecord:
+      type: object
+      additionalProperties: false
+      required:
+      - projectionVersion
+      - assignments
+      properties:
+        projectionVersion: *id005
+        assignments:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - assignmentId
+            - firstReadyAt
+            - expiresAt
+            - accessStatus
+            properties:
+              assignmentId: *id003
+              firstReadyAt: *id004
+              expiresAt: *id004
+              accessStatus:
+                type: string
+                enum:
+                - pending
+                - applied
+                - unknown
+                - blocked
+    Problem:
+      type: object
+      additionalProperties: false
+      required:
+      - problemId
+      - stage
+      - reason
+      - createdAt
+      - version
+      - status
+      properties:
+        problemId: *id003
+        purchaseId: *id003
+        cellId: *id003
+        stage: *id001
+        reason: *id001
+        createdAt: *id004
+        deliveredAt: *id004
+        acceptedAt: *id004
+        assigneeId: *id003
+        version: *id005
+        status:
+          type: string
+          enum:
+          - new
+          - accepted
+          - resolved
+        result: *id001
+    Reason:
+      type: object
+      additionalProperties: false
+      required:
+      - reason
+      properties:
+        reason: *id001
+    Resolution:
+      type: object
+      additionalProperties: false
+      required:
+      - result
+      properties:
+        result: *id001
+      description: Запись результата не меняет подтвержденные состояния оплаты и оборудования. Сервер отклоняет
+        закрытие при незавершенных обязательствах.
+    Verification:
+      type: object
+      additionalProperties: false
+      required:
+      - evidenceType
+      - evidenceReference
+      properties:
+        evidenceType:
+          type: string
+          enum:
+          - payment_confirmation
+        evidenceReference: *id001
+      description: Менеджер проверяет покупку по подтверждению платежа и реквизитам исходной покупки; публичного
+        номера недостаточно. Ссылка на проверенные данные без реквизитов карты.
+    VerificationResult:
+      type: object
+      additionalProperties: false
+      required:
+      - verificationId
+      - purchaseId
+      - verifiedBy
+      - verifiedAt
+      properties:
+        verificationId: *id003
+        purchaseId: *id003
+        verifiedBy: *id003
+        verifiedAt: *id004
+    Reprint:
+      type: object
+      additionalProperties: false
+      required:
+      - verificationId
+      - printerDeviceId
+      properties:
+        verificationId: *id003
+        printerDeviceId: *id003
+    Task:
+      type: object
+      additionalProperties: false
+      required:
+      - operationId
+      - status
+      properties:
+        operationId: *id003
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - confirmed
+          - unknown
+          - failed
+        resourceId: *id003
+    ExternalRefund:
+      type: object
+      additionalProperties: false
+      required:
+      - externalRefundId
+      - provider
+      - reason
+      properties:
+        externalRefundId: *id001
+        provider: *id001
+        reason: *id001
+      description: Полная сумма выводится из успешной оплаты. Сервер сверяет ID, покупку, сумму и кассу; ручная
+        отметка не подтверждает возврат.
+    Cell:
+      type: object
+      additionalProperties: false
+      required:
+      - cellId
+      - cellNumber
+      - version
+      - state
+      - sensorHealthy
+      - doorClosed
+      - stableEmpty
+      - fresh
+      properties:
+        cellId: *id003
+        cellNumber: *id001
+        version: *id005
+        state:
+          type: string
+          enum:
+          - free
+          - assigned
+          - loading
+          - occupied
+          - open
+          - checking
+          - blocked
+          - awaiting_cleaning
+          - maintenance
+        sensorHealthy:
+          type: boolean
+        doorClosed:
+          type: boolean
+        stableEmpty:
+          type: boolean
+        fresh:
+          type: boolean
+        problemId: *id003
+    CellService:
+      type: object
+      additionalProperties: false
+      required:
+      - result
+      - comment
+      properties:
+        result:
+          type: string
+          enum:
+          - cleaned
+          - control_restored
+        comment: *id001
+      description: Уборка не считается выдачей. Освобождение возможно только по подтвержденному закрытию, исправности
+        и стабильной пустоте; одной отметки недостаточно.
+    Challenge:
+      type: object
+      additionalProperties: false
+      required:
+      - challengeId
+      - expiresAt
+      - retryAfterSeconds
+      properties:
+        challengeId: *id003
+        expiresAt: *id004
+        retryAfterSeconds:
+          type: integer
+          minimum: 1
+    ChallengeInput:
+      type: object
+      additionalProperties: false
+      required:
+      - phone
+      - purpose
+      properties:
+        phone:
+          type: string
+          pattern: ^\+[1-9][0-9]{7,14}$
+        purpose:
+          type: string
+          enum:
+          - register
+          - login
+    LoyaltyConfirm:
+      type: object
+      additionalProperties: false
+      required:
+      - challengeId
+      - code
+      properties:
+        challengeId: *id003
+        code:
+          type: string
+          minLength: 1
+          writeOnly: true
+        name: *id001
+        birthDate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+      description: name и birthDate обязательны при register; email необязателен. Код одноразовый, срок и лимиты
+        возвращает сервер по политике SMS-поставщика.
+    Loyalty:
+      type: object
+      additionalProperties: false
+      required:
+      - loyaltyToken
+      - expiresAt
+      - profileId
+      - balance
+      - maxSpendPercent
+      - earnPercent
+      properties:
+        loyaltyToken: *id001
+        expiresAt: *id004
+        profileId: *id003
+        balance:
+          type: integer
+          minimum: 0
+        maxSpendPercent:
+          type: integer
+          minimum: 30
+          maximum: 30
+        earnPercent:
+          type: integer
+          minimum: 5
+          maximum: 5
+      description: 1 бонус = 1 рубль. Правила A-10. Токен привязан к текущей сессии киоска.
+    Notification:
+      type: object
+      additionalProperties: false
+      required:
+      - notificationId
+      - type
+      - occurredAt
+      - description
+      - purchaseIds
+      properties:
+        notificationId: *id003
+        type:
+          type: string
+          enum:
+          - item_removed
+          - technical_error
+        occurredAt: *id004
+        description: *id001
+        purchaseIds:
+          type: array
+          items: *id003
+    MenuDraft:
+      type: object
+      additionalProperties: false
+      required:
+      - draftId
+      - version
+      - effectiveFrom
+      - items
+      - promotions
+      - categories
+      properties:
+        draftId: *id003
+        version: *id005
+        effectiveFrom:
+          type: string
+          enum:
+          - next_trading_day
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - dishId
+            - categoryId
+            - name
+            - composition
+            - weightGrams
+            - allergens
+            - price
+            - kind
+            - comboComponents
+            - menuEntryId
+            properties:
+              dishId: &id009
+                type: string
+                format: uuid
+              categoryId: *id009
+              name: &id010
+                type: string
+                minLength: 1
+                x-release: R1
+              composition: *id010
+              weightGrams:
+                type: integer
+                minimum: 1
+              allergens:
+                type: array
+                items: *id010
+              price:
+                type: integer
+                minimum: 0
+                description: Целые копейки RUB. Рассчитывает сервер.
+                x-release: R1
+              kind:
+                type: string
+                enum:
+                - regular
+                - combo
+              recipeVersionId: *id009
+              comboComponents:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: false
+                  required:
+                  - dishId
+                  - quantity
+                  properties:
+                    dishId: *id009
+                    quantity:
+                      type: integer
+                      minimum: 1
+              photoUrl:
+                type: string
+                format: uri
+              menuEntryId:
+                type: string
+                format: uuid
+            description: Позиция будущего дня со всеми данными, необходимыми для редактирования. recipeVersionId
+              может отсутствовать у новой позиции черновика до работы технолога. Такая позиция не применяется к
+              продажам, пока сервер не подтвердит полную согласованную техкарту.
+        promotions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Promotion'
+        categories:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - categoryId
+            - name
+            - position
+            properties:
+              categoryId:
+                type: string
+                format: uuid
+              name:
+                type: string
+                minLength: 1
+                x-release: R1
+              position:
+                type: integer
+                minimum: 0
+    MenuEntryEdit:
+      type: object
+      additionalProperties: false
+      required:
+      - dishId
+      - categoryId
+      - name
+      - composition
+      - weightGrams
+      - allergens
+      - price
+      - kind
+      - comboComponents
+      properties:
+        dishId: *id003
+        categoryId: *id003
+        name: *id001
+        composition: *id001
+        weightGrams:
+          type: integer
+          minimum: 1
+        allergens:
+          type: array
+          items: *id001
+        price: *id006
+        kind:
+          type: string
+          enum:
+          - regular
+          - combo
+        recipeVersionId: *id003
+        comboComponents:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - dishId
+            - quantity
+            properties:
+              dishId: *id003
+              quantity:
+                type: integer
+                minimum: 1
+        photoUrl:
+          type: string
+          format: uri
+      description: Полная запись позиции будущего дня. Комбо только из готовых блюд без циклов; для regular comboComponents
+        пуст. photoUrl необязателен. recipeVersionId может отсутствовать у новой позиции черновика до работы технолога.
+        Такая позиция не применяется к продажам, пока сервер не подтвердит полную согласованную техкарту.
+    Promotion:
+      type: object
+      additionalProperties: false
+      required:
+      - promotionId
+      - name
+      - kind
+      - daysOfWeek
+      - startLocalTime
+      - endLocalTime
+      - entryIds
+      properties:
+        promotionId: *id003
+        name: *id001
+        kind:
+          type: string
+          enum:
+          - business_lunch
+          - combo_price
+          - gift_glass
+        daysOfWeek:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 7
+          minItems: 1
+          uniqueItems: true
+        startLocalTime:
+          type: string
+          pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+        endLocalTime:
+          type: string
+          pattern: ^([01][0-9]|2[0-3]):[0-5][0-9]$
+        entryIds:
+          type: array
+          items: *id003
+        discountPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        comboPrice: *id006
+        giftThresholdExclusive: *id006
+      description: 'Условия проверяются по kind. MVP A-01 неизменен: 10%, Пн–Пт [10:00,16:00), обычные блюда без
+        другой акции. R1 giftThresholdExclusive=150000 либо специальное комбо; исключения A-10 сохраняются.'
+    Recipe:
+      type: object
+      additionalProperties: false
+      required:
+      - recipeVersionId
+      - dishId
+      - version
+      - effectiveFrom
+      - ingredients
+      - preparationParameters
+      properties:
+        recipeVersionId: *id003
+        dishId: *id003
+        version:
+          type: integer
+          minimum: 0
+          description: В PUT ожидаемая версия (0 при отсутствии карты); ответ содержит новую версию не меньше 1.
+        effectiveFrom:
+          type: string
+          enum:
+          - next_trading_day
+        ingredients:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - ingredientId
+            - quantity
+            - unit
+            properties:
+              ingredientId: *id003
+              quantity:
+                type: string
+                pattern: ^(?:[1-9][0-9]*(?:\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
+                description: Положительное точное десятичное число строкой, без нуля и экспоненты.
+              unit: *id001
+          minItems: 1
+        preparationParameters:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - name
+            - value
+            - unit
+            properties:
+              name: *id001
+              value: *id001
+              unit: *id001
+      description: Параметры по согласованному словарю комплекса. Не команды опасным операциям.
+    Production:
+      type: object
+      additionalProperties: false
+      required:
+      - asOf
+      - fresh
+      - robots
+      properties:
+        asOf: *id004
+        fresh:
+          type: boolean
+        robots:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - robotId
+            - state
+            - errors
+            - supplies
+            properties:
+              robotId: *id003
+              state:
+                type: string
+                enum:
+                - ready
+                - busy
+                - error
+                - unavailable
+              errors:
+                type: array
+                items: *id001
+              supplies:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: false
+                  required:
+                  - ingredientId
+                  - remainingQuantity
+                  - unit
+                  - remainingPercent
+                  - needsRefill
+                  properties:
+                    ingredientId: *id003
+                    remainingQuantity:
+                      type: string
+                      pattern: ^[0-9]+(\.[0-9]+)?$
+                    unit: *id001
+                    remainingPercent:
+                      type: integer
+                      minimum: 0
+                      maximum: 100
+                    needsRefill:
+                      type: boolean
+                    estimatedEmptyAt: *id004
+      description: Обновление не реже 30 с. needsRefill при остатке ниже 30%; неизвестная оценка времени не подменяется
+        числом.
+    Report:
+      type: object
+      additionalProperties: false
+      required:
+      - restaurantId
+      - from
+      - to
+      - paidOrderCount
+      - subtotal
+      - discount
+      - moneyPaid
+      - bonusSpent
+      - confirmedRefunds
+      - netMoney
+      - currency
+      properties:
+        restaurantId: *id003
+        from: *id004
+        to: *id004
+        paidOrderCount:
+          type: integer
+          minimum: 0
+        subtotal: *id006
+        discount: *id006
+        moneyPaid: *id006
+        bonusSpent:
+          type: integer
+          minimum: 0
+        confirmedRefunds: *id006
+        netMoney:
+          type: integer
+          description: moneyPaid минус confirmedRefunds, копейки RUB; может быть отрицательным.
+        currency:
+          type: string
+          enum:
+          - RUB
+    Export:
+      type: object
+      additionalProperties: false
+      required:
+      - exportId
+      - restaurantId
+      - tradingDayId
+      - status
+      - operationIds
+      properties:
+        exportId: *id003
+        restaurantId: *id003
+        tradingDayId: *id003
+        status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - confirmed
+          - unknown
+          - failed
+        operationIds:
+          type: array
+          items: *id003
+        confirmedAt: *id004
+    Problems:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Problem'
+        nextCursor: *id001
+    Purchases:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Purchase'
+        nextCursor: *id001
+    Cells:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cell'
+        nextCursor: *id001
+    Notifications:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        nextCursor: *id001
+    SaleCommand:
+      type: object
+      additionalProperties: false
+      required:
+      - mode
+      - reason
+      properties:
+        mode:
+          type: string
+          enum:
+          - stop
+          - resume
+        reason: *id001
+    ExportInput:
+      type: object
+      additionalProperties: false
+      required:
+      - restaurantId
+      - tradingDayId
+      properties:
+        restaurantId: *id003
+        tradingDayId: *id003
+    IngredientCatalog:
+      type: object
+      additionalProperties: false
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+            - ingredientId
+            - name
+            - unit
+            properties:
+              ingredientId:
+                type: string
+                format: uuid
+              name:
+                type: string
+                minLength: 1
+              unit:
+                type: string
+                minLength: 1
+      description: Справочник IngredientRef из складского контура, только для выбора в техкарте. Не редактор склада
+        и не просмотр партий/остатков.

@@ -17,10 +17,11 @@
 - [Информационная модель](published/03_model/class-diagram.md), [сущности](published/03_model/entities.md) и [состояния](published/03_model/order-states.md).
 - [Архитектура](published/04_architecture/style.md), [компоненты](published/04_architecture/components.md), [интеграции](published/04_architecture/integrations.md) и [расчеты](published/04_architecture/load-db.md).
 
+- [Интерфейсы и API](published/05_api/ui.md), [OpenAPI](published/05_api/openapi.md) и [контракты адаптеров](published/05_api/adapter-contracts.md).
+
 ## В работе
 
 - [Обзор Use Case](documentation/02_requirements/use-case.md).
-- [API и UI](documentation/05_api/openapi.md).
 - [Критерии приемки](documentation/06_decomposition/acceptance-criteria.md).
 - [Декомпозиция](documentation/06_decomposition/tasks.md).
 - [Тестирование](documentation/07_testing/test-cases-mvp.md).
