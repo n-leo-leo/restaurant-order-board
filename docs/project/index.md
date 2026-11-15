@@ -14,11 +14,12 @@
 - [Ограничения и допущения](published/02_requirements/assumptions.md).
 - [Публичный план этапов](published/stages.md).
 
+- [Информационная модель](published/03_model/class-diagram.md), [сущности](published/03_model/entities.md) и [состояния](published/03_model/order-states.md).
+- [Архитектура](published/04_architecture/style.md), [компоненты](published/04_architecture/components.md), [интеграции](published/04_architecture/integrations.md) и [расчеты](published/04_architecture/load-db.md).
+
 ## В работе
 
 - [Обзор Use Case](documentation/02_requirements/use-case.md).
-- [Информационная модель](documentation/03_model/class-diagram.md).
-- [Архитектура](documentation/04_architecture/style.md).
 - [API и UI](documentation/05_api/openapi.md).
 - [Критерии приемки](documentation/06_decomposition/acceptance-criteria.md).
 - [Декомпозиция](documentation/06_decomposition/tasks.md).

@@ -78,3 +78,48 @@
 | Ц-5 — тиражирование | НФТ-03; нагрузка и архитектура этапа 2 |
 
 Количественные и организационные ограничения из раздела бизнеса проверяются расчетами и оценкой пилота, а не искусственными историями гостя. Технические зависимости проверяются на этапе 2; содержимое этапа 1 не считается согласованным только по одобрению структуры.
+
+## Связи модели и архитектуры этапа 2
+
+Имена сущностей соответствуют [диаграмме классов](../published/03_model/class-diagram.md) и [словарю](../published/03_model/entities.md). C-ID определены в [компонентах](../published/04_architecture/components.md), I-ID — в [интеграциях](../published/04_architecture/integrations.md). Состояния приведены в [модели переходов](../published/03_model/order-states.md). Релиз каждой истории сохраняется по карте.
+
+| US | Сущности | Компоненты | Интеграции |
+|---|---|---|---|
+| US-01–03 | Restaurant, TradingDay, MenuVersion, MenuEntry, Dish, RecipeVersion, Session | C-01/02/08 | I-01 |
+| US-04–05 | Cart, CartLine, Order, OrderLine | C-01/02 | I-01 перед оплатой |
+| US-06 | Order.fulfillmentType, KitchenJob | C-02/05 | I-03 |
+| US-07–08 | MenuEntry, PromotionRule, OrderLine | C-01/02 | I-01 |
+| US-09–10 | Order, Reservation, PaymentAttempt, KitchenJob, Ticket, PrintTask | C-02–06/08 | I-01–05 |
+| US-11–12 | KitchenJob, CellRef, CellAssignment, Ticket | C-05/08 | I-03/05 |
+| US-13–14 | Problem, Notification, Employee, Role | C-05/07/08 | I-03 |
+| US-15 | Order, Problem, Refund, PaymentAttempt, FiscalOperation | C-04/06/07 | I-02/04 |
+| US-16 | CellRef, CellAssignment, Problem, Notification | C-05/07/08 | I-03 |
+| US-17 | Session, Cart, Reservation, PaymentAttempt, Restaurant | C-02/03/04/08 | I-01/02 |
+| US-18–19 | LoyaltyProfileRef, Session | C-07/09 | I-07/08 |
+| US-20–21 | BonusOperationRef, Order, PaymentAttempt | C-02/04/09 | I-07 |
+| US-22 | PaymentAttempt, Ticket, PrintTask | C-04/06 | I-04/05/10 |
+| US-23 | Order, Problem, PaymentAttempt, Refund | C-02/04/07 | I-02/04 |
+| US-24–25 | Order, Refund, KitchenJob, CellAssignment, FiscalOperation | C-04–07 | I-02/03/04/10 по способу |
+| US-26 | Problem, Notification, MenuEntry | C-01/07 | I-01/03 |
+| US-27–29 | MenuVersion, MenuEntry, PromotionRule, ComboLine, TradingDay | C-01/07/08 | — |
+| US-30 | RecipeVersion, RecipeLine, IngredientRef | C-01/07 | I-03 — согласованная версия |
+| US-31 | GiftAllocation, Reservation, Order | C-02/03/09 | I-01/03 |
+| US-32–33 | RobotRef, IngredientRef, актуальность состояний | C-05/07 | I-03; в MVP внешний I-06 |
+| US-34 | Order, PaymentAttempt, Refund, ExportBatch, ExportLine | C-04/10 | I-09 |
+| US-35 | FiscalOperation, PrintTask, Problem | C-06/07 | I-04/05 |
+
+Группы диапазонов охватывают все US-01–35; они не меняют ID и не объединяют истории. AC-09.4 связан с US-02/09/10/15, AC-16.5/16.6 — с US-12/16, AC-17.4 — с US-09/10/14/17. Их БТ следуют из существующих связей этих историй.
+
+| НФТ | Данные и компоненты | Проверка |
+|---|---|---|
+| НФТ-01–03 | C-01–06/08, снимки, задания и проекции | Профиль нагрузки, 4 киоска, сеть 10–130, первая отправка ≤1 с |
+| НФТ-04–07 | C-08, PostgreSQL, копии и WAL | Бюджет A-16, резервирование, RPO/RTO и восстановление |
+| НФТ-08–10 | C-01/03/04/05/08, версии и ID операций | Свежесть p95 ≤2 с, блокировка, внешние повторы и сверка |
+| НФТ-11 | C-01/02, Session | 10 представителей, медиана ≤3 мин; среднее отдельно для мощности |
+| НФТ-12–16 | C-07/08/09, роли, сессии, аудит, профиль | Права по ресторану, очистка, отсутствие карточных данных, 90 дней/12 месяцев |
+| НФТ-17 | Адаптеры C-03–06/09/10 | REST, совместимость оборудования, инфраструктура заказчика |
+| НФТ-18 | C-05, RobotRef | Первый релиз, обновление не реже 30 с и признак устаревания |
+| НФТ-19 | C-07, Notification | Доставка и принятие ≤1 мин |
+| НФТ-20 | C-05, CellAssignment, Ticket, I-03 | Последовательность веса/дверцы, остатки, срок, неисправность |
+
+A-16 связан с НФТ-04/М-07 и расчетом доступности. A-02/A-03/A-05/A-08/A-14 связаны с реестром проверок внешних возможностей. Расчетный профиль и испытания A-06 находятся в [нагрузке](../published/04_architecture/load-db.md#verification). Подтверждение конкретных поставщиков не получено; связи не означают успешного испытания.

@@ -42,3 +42,14 @@ nav:
       - Пользовательские истории: 02_requirements/user-stories.md
       - НФТ: 02_requirements/nfr.md
       - Ограничения и допущения: 02_requirements/assumptions.md
+
+  - 3. Информационная модель:
+      - Диаграмма классов: 03_model/class-diagram.md
+      - Сущности и ограничения: 03_model/entities.md
+      - Состояния заказа: 03_model/order-states.md
+  - 4. Архитектура:
+      - Архитектурный стиль: 04_architecture/style.md
+      - Компоненты и размещение: 04_architecture/components.md
+      - Внешние системы: 04_architecture/integrations.md
+      - Схемы интеграций: 04_architecture/integration-flows.md
+      - Нагрузка и СУБД: 04_architecture/load-db.md

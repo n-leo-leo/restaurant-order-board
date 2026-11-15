@@ -47,15 +47,15 @@ nav:
       - Допущения этапа 1: published/02_requirements/assumptions.md
       - Диаграмма Use Case: documentation/02_requirements/use-case.md
   - 3. Информационная модель:
-      - Диаграмма классов: documentation/03_model/class-diagram.md
-      - Описание сущностей: documentation/03_model/entities.md
-      - Статусы заказа: documentation/03_model/order-states.md
+      - Диаграмма классов: published/03_model/class-diagram.md
+      - Описание сущностей: published/03_model/entities.md
+      - Статусы заказа: published/03_model/order-states.md
   - 4. Архитектура:
-      - Архитектурный стиль: documentation/04_architecture/style.md
-      - Компоненты: documentation/04_architecture/components.md
-      - Перечень интеграций: documentation/04_architecture/integrations.md
-      - Схемы интеграций: documentation/04_architecture/integration-flows.md
-      - Нагрузка и выбор СУБД: documentation/04_architecture/load-db.md
+      - Архитектурный стиль: published/04_architecture/style.md
+      - Компоненты: published/04_architecture/components.md
+      - Перечень интеграций: published/04_architecture/integrations.md
+      - Схемы интеграций: published/04_architecture/integration-flows.md
+      - Нагрузка и выбор СУБД: published/04_architecture/load-db.md
   - 5. API и UI:
       - Ресурсы и эндпоинты: documentation/05_api/resources.md
       - OpenAPI: documentation/05_api/openapi.md
@@ -79,3 +79,4 @@ nav:
       - "06 Ответ преподавателя и решения": "06_Ответ_преподавателя_и_решения.md"
       - "07 Финальная проверка этапа 1": "07_Финальная_проверка_этапа_1.md"
       - "09 Исходная схема оформления": "09_Исходная_схема_оформления.md"
+      - "10 Результат этапа 2": "10_Результат_этапа_2.md"
