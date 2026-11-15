@@ -6,6 +6,7 @@ site_dir: site
 
 hooks:
   - scripts/publication.py
+  - scripts/swagger_ui.py
 
 theme:
   name: material
@@ -57,5 +58,5 @@ nav:
       - Интерфейсы и макеты: 05_api/ui.md
       - Ресурсы и операции: 05_api/resources.md
       - Прототипы экранов: 05_api/prototypes.md
-      - OpenAPI: 05_api/openapi.md
+      - Swagger UI и OpenAPI: 05_api/openapi.md
       - Контракты адаптеров: 05_api/adapter-contracts.md

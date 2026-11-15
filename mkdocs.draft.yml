@@ -4,6 +4,9 @@ site_url: https://n-leo-leo.github.io/restaurant-order-board/
 docs_dir: docs/project
 site_dir: site-draft
 
+hooks:
+  - scripts/swagger_ui.py
+
 # Public landing links to homework generated only by the public build hook.
 exclude_docs: |
   /published/index.md
@@ -59,7 +62,7 @@ nav:
   - 5. API и UI:
       - Ресурсы и эндпоинты: published/05_api/resources.md
       - Прототипы экранов: published/05_api/prototypes.md
-      - OpenAPI: published/05_api/openapi.md
+      - Swagger UI и OpenAPI: published/05_api/openapi.md
       - UI и взаимодействие с API: published/05_api/ui.md
       - Контракты адаптеров: published/05_api/adapter-contracts.md
   - 6. Декомпозиция:

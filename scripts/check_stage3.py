@@ -72,6 +72,11 @@ def walk(value):
 
 
 walk(spec)
+# The Swagger view is derived from the canonical YAML, not a second edited contract.
+viewer = (PUBLIC / 'assets/swagger/index.html').read_text(encoding='utf-8')
+payload = re.search(r'<script id="openapi-spec" type="application/json">(.*?)</script>', viewer, re.S)
+assert payload and json.loads(payload.group(1)) == spec, 'Stale Swagger UI specification'
+assert hashlib.sha256((PUBLIC / '05_api/openapi.yaml').read_bytes()).hexdigest() in viewer
 # Traverse the public projection: no closed purchase or ticket fields may leak through refs.
 def public_fields(value, visited=None):
     visited = set() if visited is None else visited
