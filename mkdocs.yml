@@ -60,3 +60,12 @@ nav:
       - Прототипы экранов: 05_api/prototypes.md
       - Swagger UI и OpenAPI: 05_api/openapi.md
       - Контракты адаптеров: 05_api/adapter-contracts.md
+  - 6. Декомпозиция:
+      - Критерии приемки: 06_decomposition/acceptance-criteria.md
+      - DoR и DoD: 06_decomposition/dor-dod.md
+      - Задачи: 06_decomposition/tasks.md
+  - 7. Тестирование:
+      - Тест-кейсы MVP: 07_testing/test-cases-mvp.md
+      - Заголовки тестов первого релиза: 07_testing/test-cases-r1.md
+      - Чек-лист: 07_testing/checklist.md
+  - 8. Трассировка: 08_traceability.md

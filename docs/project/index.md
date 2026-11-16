@@ -22,11 +22,13 @@
 ## В работе
 
 - [Обзор Use Case](documentation/02_requirements/use-case.md).
-- [Критерии приемки](documentation/06_decomposition/acceptance-criteria.md).
-- [Декомпозиция](documentation/06_decomposition/tasks.md).
-- [Тестирование](documentation/07_testing/test-cases-mvp.md).
-- [Трассировка](documentation/08_traceability.md).
+- [Критерии приемки](published/06_decomposition/acceptance-criteria.md).
+- [Декомпозиция](published/06_decomposition/tasks.md).
+- [Тестирование](published/07_testing/test-cases-mvp.md).
+- [Трассировка](published/08_traceability.md).
 
 ## Рабочие материалы
 
 [План работы](01_План_проектной_работы.md), [журнал решений](documentation/decisions.md), [финальная проверка первого этапа](07_Финальная_проверка_этапа_1.md), [исходная схема оформления](09_Исходная_схема_оформления.md). Они доступны в локальной рабочей сборке и не публикуются на сайте.
+
+[Результат этапа 4 и проверки](12_Результат_этапа_4.md).

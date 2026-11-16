@@ -131,7 +131,7 @@ assert not public_fields(spec['components']['schemas']['Board']) & {
     'purchaseId', 'code', 'ticketCode', 'payment', 'calculation', 'phone', 'total'
 }
 ui = (PUBLIC / '05_api/ui.md').read_text()
-trace = (PROJECT / 'documentation/08_traceability.md').read_text()
+trace = (PUBLIC / '08_traceability.md').read_text()
 resources = (PUBLIC / '05_api/resources.md').read_text()
 for op in ops:
     assert op in ui, ('UI mapping missing', op)
@@ -149,10 +149,15 @@ baseline_files = {
     'published/02_requirements/user-stories.md': r'^\| (US-\d+) \|',
     'published/02_requirements/nfr.md': r'^\| (НФТ-\d+) \|',
     'published/02_requirements/assumptions.md': r'^\| (A-\d+) \|',
-    'documentation/06_decomposition/acceptance-criteria.md': r'^## (AC-\d+\.\d+)',
+    'published/06_decomposition/acceptance-criteria.md': r'^## (AC-\d+\.\d+)',
 }
 for file, pattern in baseline_files.items():
-    old = subprocess.check_output(['git', 'show', 'HEAD:docs/project/' + file], cwd=ROOT).decode()
+    baseline = file
+    if subprocess.run(['git', 'cat-file', '-e', 'HEAD:docs/project/' + baseline],
+                      cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
+        # Before the stage 4 move is committed, the baseline is at its legacy path.
+        baseline = file.replace('published/06_decomposition/', 'documentation/06_decomposition/')
+    old = subprocess.check_output(['git', 'show', 'HEAD:docs/project/' + baseline], cwd=ROOT).decode()
     now = (PROJECT / file).read_text()
     old_ids = re.findall(pattern, old, re.M)
     ids = re.findall(pattern, now, re.M)
@@ -193,6 +198,7 @@ class Page(HTMLParser):
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if 'id' in attrs:
+            assert attrs['id'] not in self.ids, ('Duplicate HTML ID', attrs['id'])
             self.ids.add(attrs['id'])
         for key in ['href', 'src']:
             if key in attrs:

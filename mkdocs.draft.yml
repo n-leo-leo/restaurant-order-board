@@ -66,14 +66,14 @@ nav:
       - UI и взаимодействие с API: published/05_api/ui.md
       - Контракты адаптеров: published/05_api/adapter-contracts.md
   - 6. Декомпозиция:
-      - DoR и DoD: documentation/06_decomposition/dor-dod.md
-      - Критерии приемки: documentation/06_decomposition/acceptance-criteria.md
-      - Задачи: documentation/06_decomposition/tasks.md
+      - DoR и DoD: published/06_decomposition/dor-dod.md
+      - Критерии приемки: published/06_decomposition/acceptance-criteria.md
+      - Задачи: published/06_decomposition/tasks.md
   - 7. Тестирование:
-      - Тест-кейсы MVP: documentation/07_testing/test-cases-mvp.md
-      - Тест-кейсы первого релиза: documentation/07_testing/test-cases-r1.md
-      - Чек-лист: documentation/07_testing/checklist.md
-  - 8. Трассировка: documentation/08_traceability.md
+      - Тест-кейсы MVP: published/07_testing/test-cases-mvp.md
+      - Тест-кейсы первого релиза: published/07_testing/test-cases-r1.md
+      - Чек-лист: published/07_testing/checklist.md
+  - 8. Трассировка: published/08_traceability.md
   - Рабочие заметки:
       - "00 Описание ДЗ": "00_Описание_ДЗ.md"
       - "01 План проектной работы": "01_План_проектной_работы.md"
@@ -86,3 +86,4 @@ nav:
       - "09 Исходная схема оформления": "09_Исходная_схема_оформления.md"
       - "10 Результат этапа 2": "10_Результат_этапа_2.md"
       - "11 Результат этапа 3": "11_Результат_этапа_3.md"
+      - "12 Результат этапа 4": "12_Результат_этапа_4.md"

@@ -45,6 +45,13 @@
 - [Ресурсы и операции](05_api/resources.md), [OpenAPI](05_api/openapi.md).
 - [Контракты адаптеров](05_api/adapter-contracts.md).
 
+## Декомпозиция и приемка
+
+- [Критерии приемки](06_decomposition/acceptance-criteria.md), [DoR и DoD](06_decomposition/dor-dod.md).
+- [Задачи реализации и приемки](06_decomposition/tasks.md).
+- [Полные тест-кейсы MVP](07_testing/test-cases-mvp.md) и [заголовки тестов первого релиза](07_testing/test-cases-r1.md).
+- [Чек-лист](07_testing/checklist.md), [трассировка требований](08_traceability.md).
+
 ## Домашние задания
 
 [Принятые домашние задания](homework/index.md) собраны в отдельном разделе. В этом разделе сохранены принятые версии работ. Они размещены отдельно от текущей проектной документации.
