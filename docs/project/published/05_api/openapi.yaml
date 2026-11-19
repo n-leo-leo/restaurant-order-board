@@ -157,6 +157,7 @@ paths:
       x-stories:
       - US-10
       - US-17
+      - US-22
       x-roles:
       - kiosk
       description: По токену устройства возвращает защищенную сессию исходного киоска, новый доступ к ней
@@ -608,7 +609,7 @@ paths:
       - guest
       description: Атомарно проверить If-Match, calculationId, confirmedTotal, резерв, режим продаж и свободный
         терминал; сохранить attemptId и связь с резервом до обращения к банку. Успешная регистрация возвращает
-        202, а не обещание списания. cash только R1. Истекший резерв требует preparePurchase и подтверждения
+        202, а не обещание списания. cash только R1. Сервер повторно проверяет прием и сдачу до запуска. При отказе возвращает 409 CASH_UNAVAILABLE без приема денег. Истекший резерв требует preparePurchase и подтверждения
         актуального расчета. Неизвестный платеж блокирует новую попытку; после подтвержденного отказа нужен
         новый резерв.
       security:
@@ -766,7 +767,7 @@ paths:
       - US-12
       x-roles:
       - board
-      description: Ресторан из устройства. Опрос 0,5 с. Проблемные, выданные, отмененные и no_show скрыты.
+      description: Ресторан из устройства. Опрос 0,5 с. До подтверждения первого показа ready-назначение видит одно закрепленное табло, после подтверждения — все табло ресторана. Проблемные, выданные, отмененные и no_show скрыты.
         awaiting_placement остается в preparing. При fresh=false скрыть номера и показать помощь; ошибка связи
         не разрешает оставлять старое обещание выдачи.
       security:
@@ -813,7 +814,7 @@ paths:
       - US-12
       x-roles:
       - board
-      description: Сверить назначение и версию, действительно выданные этому табло. Одной транзакцией сохранить
+      description: Сверить назначение и версию, действительно выданные этому табло. До фиксации первого показа назначение выдается одному закрепленному табло. Чужое подтверждение отклоняется с 409 ACTION_FORBIDDEN. Одной транзакцией сохранить
         firstReadyAt и expiresAt=firstReadyAt+10 мин и задачу установки срока. Повтор никогда не меняет первое
         время. Позднее подтверждение исходной версии не возвращает снятый номер и не дает доступ после срока.
       security:
@@ -2850,6 +2851,7 @@ components:
       additionalProperties: false
       required:
       - sessionId
+      - availablePaymentMethods
       - token
       - expiresAt
       - state
@@ -2880,6 +2882,13 @@ components:
             - end_session
             - wait
             - contact_manager
+        availablePaymentMethods:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum: [card, cash]
+          description: Доступные способы для текущего киоска. В R1 cash возвращается только при исправном приеме и сдаче. При запрете новой оплаты список пуст.
         activePurchaseId:
           type: string
           format: uuid
@@ -4176,7 +4185,9 @@ components:
                       pattern: ^[0-9]+(\.[0-9]+)?$
                     unit: *id001
                     remainingPercent:
-                      type: integer
+                      type: number
+                      description: Для экрана процент усекается до сотых. needsRefill определяется по исходному значению до усечения.
+                      multipleOf: 0.01
                       minimum: 0
                       maximum: 100
                     needsRefill:
@@ -4194,6 +4205,7 @@ components:
       - restaurantId
       - from
       - to
+      - tradingDays
       - paidOrderCount
       - subtotal
       - discount
@@ -4212,6 +4224,20 @@ components:
           type: string
           format: date-time
           description: Конец периода отчета, не включая указанное время.
+        tradingDays:
+          type: array
+          description: Торговые дни ресторана, пересекающие период отчета, включая дни без операций. Аналитик выбирает для выгрузки только закрытый день.
+          items:
+            type: object
+            additionalProperties: false
+            required: [tradingDayId, localDate, closed]
+            properties:
+              tradingDayId: *id003
+              localDate:
+                type: string
+                format: date
+              closed:
+                type: boolean
         paidOrderCount:
           type: integer
           minimum: 0

@@ -138,8 +138,8 @@
 <title>Placement&#45;&gt;Ready</title>
 <path fill="none" stroke="#526675" d="M608.75,-500.23C565.35,-490.13 521.17,-476.04 508.33,-458.8 497.1,-443.71 499,-422.32 503.38,-405.33"/>
 <polygon fill="#526675" stroke="#526675" points="505.84,-406.29 505.42,-398.36 500.8,-404.82 505.84,-406.29"/>
-<text xml:space="preserve" text-anchor="middle" x="591.4" y="-447.1" font-family="Arial" font-size="13.00" fill="#36464e">размещение и доступность</text>
-<text xml:space="preserve" text-anchor="middle" x="591.4" y="-431.5" font-family="Arial" font-size="13.00" fill="#36464e">подтверждены</text>
+<text xml:space="preserve" text-anchor="middle" x="591.4" y="-447.1" font-family="Arial" font-size="13.00" fill="#36464e">порция размещена</text>
+<text xml:space="preserve" text-anchor="middle" x="591.4" y="-431.5" font-family="Arial" font-size="13.00" fill="#36464e">в исправной ячейке</text>
 </g>
 <!-- Placement&#45;&gt;Problem -->
 <g id="edge9" class="edge">

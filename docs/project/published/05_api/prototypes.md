@@ -99,7 +99,7 @@
 
 ??? info "S-02: альтернативные состояния"
 
-    [Покупка с неизвестной оплатой](../assets/prototype/screens/s-02-paymentUnknown.png) · [Проверка покупки](../assets/prototype/screens/s-02-verify.png) · [Покупка проверена](../assets/prototype/screens/s-02-verified.png) · [Талон напечатан](../assets/prototype/screens/s-02-reprinted.png) · [Проблема решена](../assets/prototype/screens/s-02-resolved.png) · [Невозможность выполнения](../assets/prototype/screens/s-02-cancel.png) · [Заказ отменен; возврат требуется](../assets/prototype/screens/s-02-cancelled.png) · [Регистрация внешнего возврата](../assets/prototype/screens/s-02-refund.png) · [Возврат проверяется](../assets/prototype/screens/s-02-refundPending.png) · [Возврат подтвержден](../assets/prototype/screens/s-02-refundConfirmed.png).
+    [Заказ 042 за предыдущий день](../assets/prototype/screens/s-02-previousDay.png) · [Покупка с неизвестной оплатой](../assets/prototype/screens/s-02-paymentUnknown.png) · [Проверка покупки](../assets/prototype/screens/s-02-verify.png) · [Покупка проверена](../assets/prototype/screens/s-02-verified.png) · [Талон напечатан](../assets/prototype/screens/s-02-reprinted.png) · [Проблема решена](../assets/prototype/screens/s-02-resolved.png) · [Невозможность выполнения](../assets/prototype/screens/s-02-cancel.png) · [Заказ отменен; возврат требуется](../assets/prototype/screens/s-02-cancelled.png) · [Регистрация внешнего возврата](../assets/prototype/screens/s-02-refund.png) · [Возврат проверяется](../assets/prototype/screens/s-02-refundPending.png) · [Деньги возвращены, чек на сверке](../assets/prototype/screens/s-02-moneyConfirmed.png) · [Деньги и чек подтверждены](../assets/prototype/screens/s-02-refundConfirmed.png).
 
 ??? info "S-03: альтернативные состояния"
 
@@ -127,7 +127,7 @@
 
 ??? info "R-02: альтернативные состояния"
 
-    [Пример заказа с подарком](../assets/prototype/screens/r-02-giftEligible.png) · [Выбор способа оплаты](../assets/prototype/screens/r-02-method.png) · [Нулевой баланс](../assets/prototype/screens/r-02-noBonus.png) · [Стаканы закончились](../assets/prototype/screens/r-02-giftMissing.png).
+    [Пример заказа с подарком](../assets/prototype/screens/r-02-giftEligible.png) · [Выбор способа оплаты](../assets/prototype/screens/r-02-method.png) · [Доступна только карта](../assets/prototype/screens/r-02-cardOnly.png) · [Нулевой баланс](../assets/prototype/screens/r-02-noBonus.png) · [Стаканы закончились](../assets/prototype/screens/r-02-giftMissing.png).
 
 | **R-03 · Наличная оплата** |  |
 |---|---|
@@ -147,7 +147,7 @@
 
 ??? info "R-04: альтернативные состояния"
 
-    [Карточка заказа](../assets/prototype/screens/r-04-detail.png) · [Подтверждение отмены](../assets/prototype/screens/r-04-cancel.png) · [Заказ отменен; возврат требуется](../assets/prototype/screens/r-04-cancelled.png) · [Полный возврат](../assets/prototype/screens/r-04-refund.png) · [Возврат проверяется](../assets/prototype/screens/r-04-refundPending.png) · [Возврат подтвержден](../assets/prototype/screens/r-04-refundConfirmed.png) · [Уведомления](../assets/prototype/screens/r-04-notifications.png) · [Заказы не найдены](../assets/prototype/screens/r-04-empty.png).
+    [Карточка заказа](../assets/prototype/screens/r-04-detail.png) · [Подтверждение отмены](../assets/prototype/screens/r-04-cancel.png) · [Заказ отменен; возврат требуется](../assets/prototype/screens/r-04-cancelled.png) · [Полный возврат](../assets/prototype/screens/r-04-refund.png) · [Возврат проверяется](../assets/prototype/screens/r-04-refundPending.png) · [Деньги возвращены, чек на сверке](../assets/prototype/screens/r-04-moneyConfirmed.png) · [Деньги и чек подтверждены](../assets/prototype/screens/r-04-refundConfirmed.png) · [Уведомления](../assets/prototype/screens/r-04-notifications.png) · [Заказы не найдены](../assets/prototype/screens/r-04-empty.png).
 
 ??? info "R-05: альтернативные состояния"
 

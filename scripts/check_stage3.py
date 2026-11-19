@@ -89,6 +89,17 @@ assert ops['getSession']['security'] == [{'deviceAuth': []}]
 assert 'end_session' in schemas['Session']['properties']['allowedActions']['items']['enum']
 assert schemas['DocumentState']['properties']['problemStatus']['enum'] == ['new', 'accepted', 'resolved']
 
+# Screen contracts used before starting payment and exporting the selected trading day.
+assert 'availablePaymentMethods' in schemas['Session']['required']
+assert schemas['Session']['properties']['availablePaymentMethods']['items']['enum'] == ['card', 'cash']
+assert 'tradingDays' in schemas['Report']['required']
+days = schemas['Report']['properties']['tradingDays']['items']
+assert set(days['required']) == {'tradingDayId', 'localDate', 'closed'}
+assert days['properties']['tradingDayId'] == schemas['ExportInput']['properties']['tradingDayId']
+supply = schemas['Production']['properties']['robots']['items']['properties']['supplies']['items']
+percent = supply['properties']['remainingPercent']
+assert (percent['type'], percent['multipleOf'], percent['minimum'], percent['maximum']) == ('number', 0.01, 0, 100)
+
 def check_time_context(value, path=()):
     if isinstance(value, dict):
         if value.get('format') == 'date-time' and 'Срок токена' in value.get('description', ''):
@@ -151,19 +162,51 @@ baseline_files = {
     'published/02_requirements/assumptions.md': r'^\| (A-\d+) \|',
     'published/06_decomposition/acceptance-criteria.md': r'^## (AC-\d+\.\d+)',
 }
+# The last reviewed four-stage revision is independent of the current checkout.
+baseline_revision = '7d0003643b1822388d31b7ecb0bf8bdb56639d4b'
+
+
+def requirement_rows(source, pattern):
+    return {line.split('|')[1].strip(): [cell.strip() for cell in line.split('|')[1:-1]]
+            for line in source.splitlines() if re.match(pattern, line)}
+
+
 for file, pattern in baseline_files.items():
-    baseline = file
-    if subprocess.run(['git', 'cat-file', '-e', 'HEAD:docs/project/' + baseline],
-                      cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
-        # Before the stage 4 move is committed, the baseline is at its legacy path.
-        baseline = file.replace('published/06_decomposition/', 'documentation/06_decomposition/')
-    old = subprocess.check_output(['git', 'show', 'HEAD:docs/project/' + baseline], cwd=ROOT).decode()
+    old = subprocess.check_output(['git', 'show', f'{baseline_revision}:docs/project/{file}'], cwd=ROOT).decode()
     now = (PROJECT / file).read_text()
     old_ids = re.findall(pattern, old, re.M)
     ids = re.findall(pattern, now, re.M)
     assert ids == old_ids and len(ids) == len(set(ids)), file
-    if 'user-stories' in file or 'assumptions' in file or '/nfr' in file:
-        assert now == old, ('Source requirement changed', file)
+    if 'user-stories' in file or '/nfr' in file:
+        original = requirement_rows(old, pattern)
+        current = requirement_rows(now, pattern)
+        for identifier, cells in current.items():
+            # Source citations can be edited. Story text, release, business requirements,
+            # NFR category and measurable conditions retain their reviewed values.
+            if identifier == 'НФТ-11':
+                assert cells[:2] == original[identifier][:2]
+                assert cells[2] == (
+                    'Не менее половины участников завершают заказ за 3 мин или быстрее. Время считается от начала '
+                    'сессии до успешной оплаты. Для предварительной проверки 10 представителей целевой аудитории '
+                    'проходят одинаковый сценарий без помощи. Критерий — не менее 5 из всех 10 участников. '
+                    'Незавершенный заказ остается в знаменателе. Причины незавершения и банковские сбои '
+                    'фиксируются отдельно.'
+                ), identifier
+            else:
+                assert cells[:-1] == original[identifier][:-1], identifier
+            if '/nfr' in file:
+                # The basis column also contains acceptance conditions and assumption status.
+                basis = original[identifier][-1].replace('ДЗ 13', 'Прогноз нагрузки сети')
+                basis = basis.replace('ДЗ 05', 'Кейс ресторана').replace('ДЗ 07, US 20', 'Требования к мониторингу производства')
+                assert cells[-1] == basis, identifier
+            else:
+                # Keep cross-references to project assumptions when editing course citations.
+                assert re.findall(r'A-\d+', cells[-1]) == re.findall(r'A-\d+', original[identifier][-1]), identifier
+    if 'assumptions' in file:
+        approved = old.replace('Не менее половины заказов оформляются за 3 минуты или быстрее.',
+                               'В проверке с 10 участниками не менее 5 завершают заказ за 3 минуты или быстрее. '
+                               'В знаменателе остаются все 10, в том числе участники с банковским сбоем или незавершенным заказом.')
+        assert now == approved, ('Source assumption changed', file)
 assert not (PROJECT / 'documentation/05_api').exists()
 
 flow_page = (PUBLIC / '04_architecture/integration-flows.md').read_text()

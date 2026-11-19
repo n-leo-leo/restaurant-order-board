@@ -52,11 +52,12 @@
 <text x="260.0" y="863" text-anchor="middle" font-family="Arial" font-size="15">попытаться разместить еду</text>
 <polygon points="260.0,1010 292,1042.0 260.0,1074 228,1042.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
 <text x="260.0" y="1049.0" text-anchor="middle" font-family="Arial" font-size="25">×</text>
-<text x="260.0" y="966" text-anchor="middle" font-family="Arial" font-size="15">Размещение подтверждено,</text>
-<text x="260.0" y="984" text-anchor="middle" font-family="Arial" font-size="15">выдача доступна?</text>
+<text x="260.0" y="966" text-anchor="middle" font-family="Arial" font-size="15">Порция размещена, вес подтвержден,</text>
+<text x="260.0" y="984" text-anchor="middle" font-family="Arial" font-size="15">ячейка исправна?</text>
 <rect x="130" y="1200" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
-<text x="260.0" y="1234.0" text-anchor="middle" font-family="Arial" font-size="15">Система: показать «Готов» и</text>
-<text x="260.0" y="1252.0" text-anchor="middle" font-family="Arial" font-size="15">номер ячейки</text>
+<text x="260.0" y="1234.0" text-anchor="middle" font-family="Arial" font-size="15">Показать «Готов» и ячейку.</text>
+<text x="260.0" y="1252.0" text-anchor="middle" font-family="Arial" font-size="15">Подтвердить первый показ,</text>
+<text x="260" y="1270" text-anchor="middle" font-family="Arial" font-size="15">применить срок для доступа</text>
 <polygon points="260.0,1390 292,1422.0 260.0,1454 228,1422.0" fill="#fff7ed" stroke="#0f172a" stroke-width="2"/>
 <circle cx="260.0" cy="1422.0" r="18" fill="none" stroke="#0f172a"/><circle cx="260.0" cy="1422.0" r="15" fill="none" stroke="#0f172a"/>
 <polygon points="260.0,1412.0 269.51056516295154,1418.9098300562505 265.87785252292474,1430.0901699437495 254.12214747707526,1430.0901699437495 250.48943483704846,1418.9098300562505" fill="none" stroke="#0f172a"/>

@@ -32,12 +32,12 @@
       <bpmn:incoming>Flow_bpmn-fulfillment_6</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_8</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="p_cellok" name="Размещение подтверждено, выдача доступна?" gatewayDirection="Diverging">
+    <bpmn:exclusiveGateway id="p_cellok" name="Порция размещена, вес подтвержден, ячейка исправна?" gatewayDirection="Diverging">
       <bpmn:incoming>Flow_bpmn-fulfillment_8</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_9</bpmn:outgoing>
       <bpmn:outgoing>Flow_bpmn-fulfillment_10</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="p_ready" name="Система: показать «Готов» и номер ячейки">
+    <bpmn:task id="p_ready" name="Показать «Готов» и ячейку. Подтвердить первый показ и применить исходный срок для доступа">
       <bpmn:incoming>Flow_bpmn-fulfillment_9</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_11</bpmn:outgoing>
     </bpmn:task>
@@ -58,7 +58,7 @@
       <bpmn:incoming>Flow_bpmn-fulfillment_13</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_18</bpmn:outgoing>
       <bpmn:timerEventDefinition id="p_timer_def">
-        <bpmn:timeDuration>PT10M</bpmn:timeDuration>
+        <bpmn:timeDate>expiresAt</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="p_failure" name="Сбой выдачи или контроля веса">

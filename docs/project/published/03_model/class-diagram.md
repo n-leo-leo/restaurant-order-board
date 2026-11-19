@@ -21,10 +21,10 @@ class PromotionRule
 class ComboLine {
   int quantity
 }
-MenuVersion "1" *-- "1..*" MenuEntry
+MenuVersion "1" *-- "0..*" MenuEntry
 Category "1" --> "0..*" MenuEntry
 MenuEntry "0..*" --> "1" Dish
-MenuEntry "0..*" --> "1" RecipeVersion
+MenuEntry "0..*" --> "0..1" RecipeVersion
 RecipeVersion "1" *-- "1..*" RecipeLine
 RecipeLine "0..*" --> "1" IngredientRef
 MenuVersion "1" --> "0..*" PromotionRule
