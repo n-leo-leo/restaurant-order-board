@@ -18,7 +18,14 @@
 <text x="268.0" y="1098" font-family="Arial" font-size="15" fill="#334155">Да</text>
 <polyline points="292,1042 1070,1042" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
 <text x="300" y="1066" font-family="Arial" font-size="15" fill="#334155">Нет</text>
-<polyline points="260.0,1276 260.0,1390" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260,1276 260,1291" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="260,1331 260,1390" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="280,1311 930,1311 930,1114 1100,1114 1100,1086" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polygon points="260,1291 280,1311 260,1331 240,1311" fill="#fff7df" stroke="#0f172a" stroke-width="2"/>
+<text x="260" y="1316" text-anchor="middle" font-family="Arial" font-size="18">×</text>
+<text x="233" y="1316" text-anchor="end" font-family="Arial" font-size="15">Доступ подтвержден?</text>
+<text x="268" y="1351" font-family="Arial" font-size="15">Да</text>
+<text x="294" y="1304" font-family="Arial" font-size="15">Нет или неизвестно</text>
 <polyline points="260.0,1454 260.0,1560" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
 <polyline points="292,1422 730,1422 730,1560" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
 <polyline points="260,1454 260,1500 1200,1500 1200,1560" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
@@ -26,7 +33,14 @@
 <polyline points="260.0,1826 260.0,1930" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
 <polyline points="260.0,2006 260.0,2100" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
 <polyline points="730.0,1604 730.0,1730" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
-<polyline points="730.0,1806 730.0,1900" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="730,1806 730,1829" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="730,1869 730,1900" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polyline points="750,1849 1460,1849 1460,1030 1330,1030" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+<polygon points="730,1829 750,1849 730,1869 710,1849" fill="#fff7df" stroke="#0f172a" stroke-width="2"/>
+<text x="730" y="1854" text-anchor="middle" font-family="Arial" font-size="18">×</text>
+<text x="703" y="1854" text-anchor="end" font-family="Arial" font-size="15">Неявка по AC-16.1?</text>
+<text x="738" y="1889" font-family="Arial" font-size="15">Да</text>
+<text x="764" y="1842" font-family="Arial" font-size="15">Нет или неизвестно</text>
 <polyline points="730.0,1976 730.0,2100" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
 <polyline points="1222,1582 1420,1582 1420,1048 1330,1048" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
 <polyline points="1200.0,1086 1200.0,1200" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
@@ -77,9 +91,9 @@
 <text x="260.0" y="1784.0" text-anchor="middle" font-family="Arial" font-size="15">Система: «Выдан», снять номер</text>
 <text x="260.0" y="1802.0" text-anchor="middle" font-family="Arial" font-size="15">(A-02)</text>
 <rect x="600" y="1730" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
-<text x="730.0" y="1755.0" text-anchor="middle" font-family="Arial" font-size="15">Система: снять номер,</text>
-<text x="730.0" y="1773.0" text-anchor="middle" font-family="Arial" font-size="15">блокировать выдачу, уведомить</text>
-<text x="730.0" y="1791.0" text-anchor="middle" font-family="Arial" font-size="15">сотрудника</text>
+<text x="730.0" y="1755.0" text-anchor="middle" font-family="Arial" font-size="15">Система: закрыть доступ,</text>
+<text x="730.0" y="1773.0" text-anchor="middle" font-family="Arial" font-size="15">снять номер и сверить</text>
+<text x="730.0" y="1791.0" text-anchor="middle" font-family="Arial" font-size="15">цикл выдачи</text>
 <rect x="600" y="1900" width="260" height="76" rx="10" fill="#eff6ff" stroke="#0f172a" stroke-width="2"/>
 <text x="730.0" y="1934.0" text-anchor="middle" font-family="Arial" font-size="15">Сотрудник: убрать еду; система:</text>
 <text x="730.0" y="1952.0" text-anchor="middle" font-family="Arial" font-size="15">подтвердить пустоту (A-04)</text>

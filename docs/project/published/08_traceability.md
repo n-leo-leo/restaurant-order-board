@@ -23,9 +23,9 @@
 | БТ-06 | US-11; MVP | [AC-11.1](06_decomposition/acceptance-criteria.md#ac-11-1) | [T-11A](06_decomposition/tasks.md#t-11a), [T-11B](06_decomposition/tasks.md#t-11b), [T-N01](06_decomposition/tasks.md#t-n01), [T-N06](06_decomposition/tasks.md#t-n06) | getBoard, confirmBoardDisplay, getBoardDisplay | [TC-M19](07_testing/test-cases-mvp.md#tc-m19), [TC-M20](07_testing/test-cases-mvp.md#tc-m20), [TC-M26](07_testing/test-cases-mvp.md#tc-m26), [TC-M43](07_testing/test-cases-mvp.md#tc-m43), [TC-N07](07_testing/test-cases-mvp.md#tc-n07), [TC-N16](07_testing/test-cases-mvp.md#tc-n16) |
 | БТ-06 | US-12; MVP | [AC-12.1](06_decomposition/acceptance-criteria.md#ac-12-1) | [T-12A](06_decomposition/tasks.md#t-12a), [T-12B](06_decomposition/tasks.md#t-12b), [T-N06](06_decomposition/tasks.md#t-n06) | I-03 (талон и выдача), reprintTicket | [TC-M21](07_testing/test-cases-mvp.md#tc-m21), [TC-M22](07_testing/test-cases-mvp.md#tc-m22), [TC-M23](07_testing/test-cases-mvp.md#tc-m23), [TC-N16](07_testing/test-cases-mvp.md#tc-n16), [TC-N20](07_testing/test-cases-mvp.md#tc-n20) |
 | БТ-07 | US-13; MVP | [AC-13.1](06_decomposition/acceptance-criteria.md#ac-13-1) | [T-13A](06_decomposition/tasks.md#t-13a), [T-13B](06_decomposition/tasks.md#t-13b) | getPurchase, getBoard; помощь в зале | [TC-M24](07_testing/test-cases-mvp.md#tc-m24) |
-| БТ-07 | US-14; MVP | [AC-14.1](06_decomposition/acceptance-criteria.md#ac-14-1) | [T-14A](06_decomposition/tasks.md#t-14a), [T-14B](06_decomposition/tasks.md#t-14b), [T-N05](06_decomposition/tasks.md#t-n05), [T-N07](06_decomposition/tasks.md#t-n07) | listProblems, acceptProblem, resolveProblem, getStaffSalesState, setSalesState | [TC-M25](07_testing/test-cases-mvp.md#tc-m25), [TC-M26](07_testing/test-cases-mvp.md#tc-m26), [TC-N11](07_testing/test-cases-mvp.md#tc-n11), [TC-N19](07_testing/test-cases-mvp.md#tc-n19) |
+| БТ-07 | US-14; MVP | [AC-14.1](06_decomposition/acceptance-criteria.md#ac-14-1) | [T-14A](06_decomposition/tasks.md#t-14a), [T-14B](06_decomposition/tasks.md#t-14b), [T-N05](06_decomposition/tasks.md#t-n05), [T-N07](06_decomposition/tasks.md#t-n07) | listProblems, confirmProblemDisplay, acceptProblem, resolveProblem, getStaffSalesState, setSalesState | [TC-M25](07_testing/test-cases-mvp.md#tc-m25), [TC-M26](07_testing/test-cases-mvp.md#tc-m26), [TC-N11](07_testing/test-cases-mvp.md#tc-n11), [TC-N19](07_testing/test-cases-mvp.md#tc-n19) |
 | БТ-07, БТ-10 | US-15; MVP | [AC-15.1](06_decomposition/acceptance-criteria.md#ac-15-1) | [T-15A](06_decomposition/tasks.md#t-15a), [T-15B](06_decomposition/tasks.md#t-15b), [T-N05](06_decomposition/tasks.md#t-n05) | findPurchases, getStaffPurchase, recordImpossibility, registerExternalRefund, getRefund | [TC-M27](07_testing/test-cases-mvp.md#tc-m27), [TC-M28](07_testing/test-cases-mvp.md#tc-m28), [TC-M29](07_testing/test-cases-mvp.md#tc-m29), [TC-N11](07_testing/test-cases-mvp.md#tc-n11), [TC-N14](07_testing/test-cases-mvp.md#tc-n14) |
-| БТ-06, БТ-07 | US-16; MVP | [AC-16.1](06_decomposition/acceptance-criteria.md#ac-16-1) | [T-16A](06_decomposition/tasks.md#t-16a), [T-16B](06_decomposition/tasks.md#t-16b), [T-N06](06_decomposition/tasks.md#t-n06) | listCells, serviceCell, acceptProblem | [TC-M30](07_testing/test-cases-mvp.md#tc-m30), [TC-N20](07_testing/test-cases-mvp.md#tc-n20) |
+| БТ-06, БТ-07 | US-16; MVP | [AC-16.1](06_decomposition/acceptance-criteria.md#ac-16-1) | [T-16A](06_decomposition/tasks.md#t-16a), [T-16B](06_decomposition/tasks.md#t-16b), [T-N06](06_decomposition/tasks.md#t-n06) | I-03, I-05, recordBoardVisibility, resolveProblem, listCells, serviceCell, acceptProblem, recordImpossibility, registerExternalRefund | [TC-M30](07_testing/test-cases-mvp.md#tc-m30), [TC-N20](07_testing/test-cases-mvp.md#tc-n20), [TC-M43](07_testing/test-cases-mvp.md#tc-m43) |
 | БТ-06, БТ-07 | US-12, US-16; MVP | [AC-16.2](06_decomposition/acceptance-criteria.md#ac-16-2) | [T-12A](06_decomposition/tasks.md#t-12a), [T-12B](06_decomposition/tasks.md#t-12b), [T-16A](06_decomposition/tasks.md#t-16a), [T-16B](06_decomposition/tasks.md#t-16b), [T-N06](06_decomposition/tasks.md#t-n06) | I-03 (талон и выдача), reprintTicket, listCells, serviceCell, acceptProblem | [TC-M31](07_testing/test-cases-mvp.md#tc-m31), [TC-N20](07_testing/test-cases-mvp.md#tc-n20) |
 | БТ-06, БТ-07 | US-16; MVP | [AC-16.3](06_decomposition/acceptance-criteria.md#ac-16-3) | [T-16A](06_decomposition/tasks.md#t-16a), [T-16B](06_decomposition/tasks.md#t-16b), [T-N05](06_decomposition/tasks.md#t-n05), [T-N06](06_decomposition/tasks.md#t-n06) | listCells, serviceCell, acceptProblem | [TC-M23](07_testing/test-cases-mvp.md#tc-m23), [TC-M32](07_testing/test-cases-mvp.md#tc-m32), [TC-N11](07_testing/test-cases-mvp.md#tc-n11), [TC-N20](07_testing/test-cases-mvp.md#tc-n20) |
 | БТ-06, БТ-07 | US-12, US-16; MVP | [AC-16.4](06_decomposition/acceptance-criteria.md#ac-16-4) | [T-12A](06_decomposition/tasks.md#t-12a), [T-12B](06_decomposition/tasks.md#t-12b), [T-16A](06_decomposition/tasks.md#t-16a), [T-16B](06_decomposition/tasks.md#t-16b), [T-N06](06_decomposition/tasks.md#t-n06) | I-03 (талон и выдача), reprintTicket, listCells, serviceCell, acceptProblem | [TC-M33](07_testing/test-cases-mvp.md#tc-m33), [TC-N20](07_testing/test-cases-mvp.md#tc-n20) |
@@ -45,7 +45,7 @@
 | БТ-11 | US-28; R1 | [AC-28.1](06_decomposition/acceptance-criteria.md#ac-28-1) | [T-28A](06_decomposition/tasks.md#t-28a), [T-28B](06_decomposition/tasks.md#t-28b) | getMenuDraft, saveMenuEntry | [TC-R26](07_testing/test-cases-r1.md#tc-r26), [TC-R27](07_testing/test-cases-r1.md#tc-r27) |
 | БТ-11 | US-29; R1 | [AC-29.1](06_decomposition/acceptance-criteria.md#ac-29-1) | [T-29A](06_decomposition/tasks.md#t-29a), [T-29B](06_decomposition/tasks.md#t-29b) | savePromotion, saveMenuEntry | [TC-R28](07_testing/test-cases-r1.md#tc-r28), [TC-R29](07_testing/test-cases-r1.md#tc-r29) |
 | БТ-11 | US-30; R1 | [AC-30.1](06_decomposition/acceptance-criteria.md#ac-30-1) | [T-30A](06_decomposition/tasks.md#t-30a), [T-30B](06_decomposition/tasks.md#t-30b), [T-N08](06_decomposition/tasks.md#t-n08) | getIngredients, getRecipe, saveRecipe | [TC-R30](07_testing/test-cases-r1.md#tc-r30), [TC-R31](07_testing/test-cases-r1.md#tc-r31), [TC-R53](07_testing/test-cases-r1.md#tc-r53) |
-| БТ-16 | US-31; R1 | [AC-31.1](06_decomposition/acceptance-criteria.md#ac-31-1) | [T-31A](06_decomposition/tasks.md#t-31a), [T-31B](06_decomposition/tasks.md#t-31b) | preparePurchase, savePromotion | [TC-R32](07_testing/test-cases-r1.md#tc-r32), [TC-R33](07_testing/test-cases-r1.md#tc-r33), [TC-R34](07_testing/test-cases-r1.md#tc-r34) |
+| БТ-16 | US-31; R1 | [AC-31.1](06_decomposition/acceptance-criteria.md#ac-31-1) | [T-31A](06_decomposition/tasks.md#t-31a), [T-31B](06_decomposition/tasks.md#t-31b) | preparePurchase, savePromotion, I-03 (комплектация по jobId) | [TC-R32](07_testing/test-cases-r1.md#tc-r32), [TC-R33](07_testing/test-cases-r1.md#tc-r33), [TC-R34](07_testing/test-cases-r1.md#tc-r34) |
 | БТ-17 | US-32; R1 | [AC-32.1](06_decomposition/acceptance-criteria.md#ac-32-1) | [T-32A](06_decomposition/tasks.md#t-32a), [T-32B](06_decomposition/tasks.md#t-32b), [T-N08](06_decomposition/tasks.md#t-n08) | getProduction | [TC-R35](07_testing/test-cases-r1.md#tc-r35), [TC-R53](07_testing/test-cases-r1.md#tc-r53) |
 | БТ-17 | US-33; R1 | [AC-33.1](06_decomposition/acceptance-criteria.md#ac-33-1) | [T-33A](06_decomposition/tasks.md#t-33a), [T-33B](06_decomposition/tasks.md#t-33b), [T-N08](06_decomposition/tasks.md#t-n08) | getProduction | [TC-R36](07_testing/test-cases-r1.md#tc-r36), [TC-R37](07_testing/test-cases-r1.md#tc-r37) |
 | БТ-13 | US-34; R1 | [AC-34.1](06_decomposition/acceptance-criteria.md#ac-34-1) | [T-34A](06_decomposition/tasks.md#t-34a), [T-34B](06_decomposition/tasks.md#t-34b), [T-N08](06_decomposition/tasks.md#t-n08) | getSalesReport, createExport, getExport | [TC-R38](07_testing/test-cases-r1.md#tc-r38), [TC-R39](07_testing/test-cases-r1.md#tc-r39), [TC-R40](07_testing/test-cases-r1.md#tc-r40), [TC-R41](07_testing/test-cases-r1.md#tc-r41), [TC-R53](07_testing/test-cases-r1.md#tc-r53) |
@@ -69,11 +69,11 @@
 
 | Правило | Процесс и проверка |
 |---|---|
-| A-07/A-08; НФТ-05/10 — сохранение покупки до оплаты | Оформление и оплата; US-09/10; AC-09.1/09.2 и AC-10.1; метрика М-08 |
-| A-03/A-14 — помощь без талона | Оформление и помощь; US-09/12/14/15; AC-09.3 и AC-15.1; права и аудит — НФТ-12–15 |
-| A-02/A-04 — остаток заказа после срока хранения | Приготовление и выдача; US-12/16; AC-16.2/16.4; НФТ-20 |
-| A-10 — порог подарка после скидок, до бонусов | Управление меню и акции; БТ-16, US-31, AC-31.1 |
-| A-15 — плановая остановка продаж | Оформление и оплата; US-01/09/10/14/17; AC-17.2/17.3; доступность — НФТ-04, изоляция сессий — НФТ-14, аудит — НФТ-15 |
+| A-07/A-08; НФТ-05/10 — сохранение покупки до оплаты | Оформление и оплата; US-09/10; AC-09.1/09.2 и AC-10.1; метрика М-08. I-01 подтверждает held до банка. Граница 5 мин и перезапуск — TC-M04, позднее подтверждение — TC-M18 |
+| A-03/A-14 — помощь без талона | Оформление и помощь; US-09/12/14/15; AC-09.3 и AC-15.1; S-01 ищет по localDate и печатному номеру, S-02 получает исходный киоск. Принтер выбирает сервер. S-02 показывает киоск печати и фиксирует вручение копии (TC-M15/27). Права и аудит — НФТ-12–15 |
+| A-02/A-04 — остаток заказа после срока хранения | Приготовление и выдача; US-12/16; AC-16.2/16.4; НФТ-20. Недоступная выдача и поздний факт выдачи до срока — AC-16.1, TC-M43 |
+| A-10 — порог подарка после скидок, до бонусов | Управление меню и акции; БТ-16, US-31, AC-31.1. Задание и подтверждение комплектации — I-03, TC-R33 |
+| A-15 — плановая остановка продаж | Оформление и оплата; US-01/09/10/14/17; AC-17.2/17.3; доступность — НФТ-04, изоляция сессий — НФТ-14, аудит — НФТ-15. События C-08 и отдельная команда resume — TC-M39 |
 
 Плановая остановка — операционный порядок для существующих историй, без отдельного календаря и изменения состава релизов.
 
@@ -130,7 +130,7 @@
 | НФТ-17 | Адаптеры C-03–06/09/10 | REST, совместимость оборудования, инфраструктура заказчика |
 | НФТ-18 | C-05, RobotRef | Первый релиз, обновление не реже 30 с и признак устаревания |
 | НФТ-19 | C-07, Notification | Принятие ≤1 мин после доставки; оба времени фиксируются |
-| НФТ-20 | C-05, CellAssignment, Ticket, I-03 | Последовательность веса/дверцы, остатки, срок, неисправность; подтверждение первого показа и применения expiresAt — AC-11.1 |
+| НФТ-20 | C-05/06, CellAssignment, Ticket, recordBoardVisibility, I-03/05 | Последовательность веса/дверцы, остатки, срок, неисправность; подтверждение первого показа и применения expiresAt — AC-11.1 |
 
 A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступности. Регулярные технические работы выполняются вне 10:00–22:00; остановки внутри дня по A-15 суммируются со сбоями в общем бюджете простоя. A-02/A-03/A-05/A-08/A-14 связаны с реестром проверок внешних возможностей. Расчетный профиль и испытания A-06 находятся в [нагрузке](04_architecture/load-db.md#verification). Подтверждение конкретных поставщиков не получено; связи не означают успешного испытания.
 
@@ -153,7 +153,7 @@ A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступн
 | US-11 | B-01 | getBoard, confirmBoardDisplay, getBoardDisplay |
 | US-12 | B-02, S-02 | I-03 (талон и выдача), reprintTicket |
 | US-13 | K-06, B-01/02 | getPurchase, getBoard; помощь в зале |
-| US-14 | S-01/02/04 | listProblems, acceptProblem, resolveProblem, getStaffSalesState, setSalesState |
+| US-14 | S-01/02/04 | listProblems, confirmProblemDisplay, acceptProblem, resolveProblem, getStaffSalesState, setSalesState |
 | US-15 | S-01/02 | findPurchases, getStaffPurchase, recordImpossibility, registerExternalRefund, getRefund |
 | US-16 | S-03 | listCells, serviceCell, acceptProblem |
 | US-17 | K-01/07, S-04 | endSession, getSession, getSalesState, setSalesState |
@@ -170,7 +170,7 @@ A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступн
 | US-28 | R-05 | getMenuDraft, saveMenuEntry |
 | US-29 | R-05 | savePromotion, saveMenuEntry |
 | US-30 | R-06 | getMenuDraft, getIngredients, getRecipe, saveRecipe |
-| US-31 | R-02/05 | preparePurchase, savePromotion |
+| US-31 | R-02/05 | preparePurchase, savePromotion, I-03 (комплектация) |
 | US-32 | R-07 | getProduction |
 | US-33 | R-07 | getProduction |
 | US-34 | R-08 | getSalesReport, createExport, getExport |
@@ -182,14 +182,16 @@ A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступн
 | Неизвестный платеж, AC-09.2/09.4/10.1 | K-04 → getPayment, getSession, getPurchase | PaymentAttempt.unknown, исходный резерв → C-03/04/08/I-01/02 → сверка каждые 10 с, менеджер через 1 мин; поздний успех без новой покупки, непригодность — полный возврат |
 | Документы и помощь, AC-09.3/15.1/35.1 | K-05/06, S-02 → getStaffPurchase, verifyPurchase, reprintTicket | FiscalOperation, PrintTask, Problem → C-06/07/I-04/05 → тот же талон, независимый чек, повтор исходной команды |
 | Первое появление и доступ, AC-11.1/12.1 | B-01/02 → getBoard, confirmBoardDisplay, getBoardDisplay; I-03 | Версия проекции, CellAssignment.firstReadyAt/expiresAt → C-05/08/I-03 → 10 мин от первого показа; применение срока до доступа; сверка исходной версии |
-| Частичное получение, срок и контроль, AC-16.1–16.6 | B-02/S-03 → I-03, listCells, serviceCell | CellAssignment, Ticket, исправность/последовательность → C-05/07/I-03 → issued только по полному циклу; остаток сохраняет срок, неявка/неисправность требует обслуживания |
-| Отмена и деньги, AC-15.1/24.1/25.1 | S-02/R-04 → recordImpossibility, registerExternalRefund; R1 cancelOrder/startRefund | Order и Refund раздельно → C-04–07/I-02/03/04/10 → полный возврат по исходной операции; unknown не закрывается отметкой |
+| Частичное получение, срок и контроль, AC-16.1–16.6 | B-02/S-03 → I-03, listCells, serviceCell | CellAssignment, Ticket, исправность/последовательность → C-05/07/I-03 → issued только по полному циклу; остаток сохраняет срок, неявка требует талона и подтвержденного интервала доступа по AC-16.1; при подтвержденном неполучении и нарушенном или недоказуемом окне → отмена и полный возврат по TC-M43 |
+| Отмена и деньги, AC-15.1/24.1/25.1 | S-02/R-04 → recordImpossibility, registerExternalRefund; R1 cancelOrder/startRefund | Order и Refund раздельно → C-04–07/I-02/03/04/10 → при просьбе гостя в R1 требуется stopped_before_start по I-03 (TC-R51); полный возврат по исходной операции |
 | Остановка и гонка, AC-17.2–17.4 | K-07/S-04 → getSalesState, setSalesState | Restaurant.manualStop, PaymentAttempt → C-02/04/08 → порядок регистрации, запрет только новых оплат; старые сверяются, resume после проверок |
 | Лояльность и подарок, AC-18.1–21.1/31.1 | R-01/02 → confirmLoyalty, getLoyalty, preparePurchase | LoyaltyProfileRef, BonusOperationRef, GiftAllocation → C-02/03/09/I-01/07/08 → лимит 30%, начисление 5%, строгий порог подарка, компенсация при возврате |
 | Наличные, AC-22.1 | R-02/03 → getSession, startPayment, getPayment, cancelCashPayment | PaymentAttempt, возврат внесенного → C-04/I-10 → подтверждение суммы, сдача; неизвестный возврат блокирует терминал |
-| Рабочие места, AC-23.1/26.1–30.1/32.1–34.1 | R-04–08 → операции соответствующих строк | Order/Notification, MenuVersion/RecipeVersion, RobotRef, ExportBatch → C-01/05/07/10/I-03/09 → будущий день, версии, свежесть 30 с, повтор пакета без удвоения |
+| Рабочие места, AC-23.1/26.1–30.1/32.1–34.1 | R-04–08 → операции соответствующих строк | Order/Notification, MenuVersion/RecipeVersion, RobotRef, ExportBatch → C-01/05/07/10/I-03/09 → будущий день, версии, свежесть 30 с, досылка поздней оплаты и повтор каждого пакета без удвоения (TC-R40) |
 
 Там, где действие происходит на устройстве комплекса или во внешнем контуре, клиентский REST-эндпоинт не добавляется искусственно. Все 35 историй имеют экран либо автоматический результат в границах своего релиза. Все AC связаны с задачами и запланированными тестами в основной матрице.
+
+Для AC-17.1 запрет endSession в created проверяется в TC-N13 (T-17A). Сверка удержания после сбоя проверяется в TC-M04 (T-02A, T-09A). Для AC-14.1 минимум displayedAt и поздний пересчет реакции проверяются в TC-N19 (T-14B, T-N07).
 
 ## НФТ → задачи → проверки
 
@@ -211,7 +213,7 @@ A-16 связан с НФТ-04/М-07, AC-17.3 и расчетом доступн
 | НФТ-12 | [T-N05](06_decomposition/tasks.md#t-n05), [T-N08](06_decomposition/tasks.md#t-n08) | [TC-N11](07_testing/test-cases-mvp.md#tc-n11), [TC-R53](07_testing/test-cases-r1.md#tc-r53) |
 | НФТ-13 | [T-N05](06_decomposition/tasks.md#t-n05) | [TC-N12](07_testing/test-cases-mvp.md#tc-n12) |
 | НФТ-14 | [T-N05](06_decomposition/tasks.md#t-n05), [T-N08](06_decomposition/tasks.md#t-n08) | [TC-N13](07_testing/test-cases-mvp.md#tc-n13), [TC-R43](07_testing/test-cases-r1.md#tc-r43) |
-| НФТ-15 | [T-N05](06_decomposition/tasks.md#t-n05), [T-N08](06_decomposition/tasks.md#t-n08) | [TC-N14](07_testing/test-cases-mvp.md#tc-n14), [TC-R43](07_testing/test-cases-r1.md#tc-r43) |
+| НФТ-15 | [T-28A](06_decomposition/tasks.md#t-28a), [T-N05](06_decomposition/tasks.md#t-n05), [T-N08](06_decomposition/tasks.md#t-n08) | [TC-N14](07_testing/test-cases-mvp.md#tc-n14), [TC-R26](07_testing/test-cases-r1.md#tc-r26), [TC-R43](07_testing/test-cases-r1.md#tc-r43) |
 | НФТ-16 | [T-N05](06_decomposition/tasks.md#t-n05), [T-N08](06_decomposition/tasks.md#t-n08) | [TC-N15](07_testing/test-cases-mvp.md#tc-n15), [TC-R42](07_testing/test-cases-r1.md#tc-r42) |
 | НФТ-17 | [T-N06](06_decomposition/tasks.md#t-n06) | [TC-N16](07_testing/test-cases-mvp.md#tc-n16) |
 | НФТ-18 | [T-N08](06_decomposition/tasks.md#t-n08) | [TC-R35](07_testing/test-cases-r1.md#tc-r35), [TC-R36](07_testing/test-cases-r1.md#tc-r36), [TC-R37](07_testing/test-cases-r1.md#tc-r37) |

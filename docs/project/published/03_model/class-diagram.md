@@ -53,7 +53,7 @@ class CartLine
 class MenuEntry
 class Order {
   UUID purchaseId
-  int publicNumber
+  string publicNumber
   bigint totalKopecks
   string state
 }

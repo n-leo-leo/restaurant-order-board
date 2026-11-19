@@ -211,7 +211,7 @@ paths:
       - US-17
       x-roles:
       - guest
-      description: До платежа освобождается резерв. При processing/unknown сброс запрещен. После оплаты —
+      description: До регистрации попытки освобождается резерв. В статусах created, processing и unknown сервер отклоняет ручной endSession с 409. Таймер 2+2 мин отключен, резерв и сессия сохраняются до сверки. После оплаты —
         только выдан талон либо проблема принята менеджером; терминал безопасно свободен. Серверный таймер
         2+2 мин действует только до платежа.
       security:
@@ -505,7 +505,7 @@ paths:
       description: 'Сначала сохраняются снимок и намерение резерва. Сервер проверяет состав, тип, цены, скидки,
         остатки и актуальность. Нет оплаты. Изменение относительно корзины требует явного согласия на K-03.
         previousPurchaseId допустим только для своей покупки с безопасно завершенным платежом: неизмененный
-        снимок после отказа сохраняет purchaseId, получает новый резерв; измененный снимок — новый purchaseId.
+        снимок после declined или not_started сохраняет purchaseId, получает новый резерв; измененный снимок — новый purchaseId.
         202 с неизвестным резервом не разрешает оплату; читать ту же покупку. Лояльность и подарок только
         R1.'
       security:
@@ -608,7 +608,7 @@ paths:
       x-roles:
       - guest
       description: Атомарно проверить If-Match, calculationId, confirmedTotal, резерв, режим продаж и свободный
-        терминал; сохранить attemptId и связь с резервом до обращения к банку. Успешная регистрация возвращает
+        терминал; сохранить attemptId и связь с резервом до обращения к банку. До вызова банка склад подтверждает held для attemptId. При неизвестном удержании попытка остается created до сверки того же резерва. При истечении до удержания попытка имеет статус not_started, нужен новый резерв и согласие. Успешная регистрация возвращает
         202, а не обещание списания. cash только R1. Сервер повторно проверяет прием и сдачу до запуска. При отказе возвращает 409 CASH_UNAVAILABLE без приема денег. Истекший резерв требует preparePurchase и подтверждения
         актуального расчета. Неизвестный платеж блокирует новую попытку; после подтвержденного отказа нужен
         новый резерв.
@@ -672,7 +672,7 @@ paths:
       x-roles:
       - guest
       description: Своя покупка. Сервер сверяет unknown каждые 10 с, через 1 мин создает проблему. Повторное
-        чтение не создает платеж. Отказ — бизнесовый status=declined, HTTP 200.
+        чтение не создает платеж. Отказ банка — status=declined. Если резерв истек до удержания и банк не вызывался, status=not_started. Оба результата читаются с HTTP 200.
       security:
       - deviceAuth: []
         sessionAuth: []
@@ -852,6 +852,47 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DisplayAck'
+  /board/visibility-intervals:
+    post:
+      operationId: recordBoardVisibility
+      summary: Сохранить интервал фактического показа назначения
+      tags: [MVP]
+      x-release: MVP
+      x-stories: [US-11, US-16]
+      x-roles: [board]
+      security:
+      - deviceAuth: []
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      description: >-
+        Табло передает завершенный интервал из локального журнала. Ресторан и устройство определяются
+        токеном. Сервер проверяет назначение в выданной этому табло версии, порядок границ и
+        измеренную погрешность часов. Пробел или непроверенное время оставляют интервал недоказанным.
+        Повтор с тем же ключом и телом сохраняет один факт. Поздний интервал участвует только в сверке.
+        Он не меняет firstReadyAt, expiresAt или доступ к ячейке.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BoardVisibilityInterval'
+      responses:
+        '204':
+          description: Интервал сохранен или ранее принят с тем же ключом
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
   /board/display-confirmations/{projectionVersion}:
     get:
       operationId: getBoardDisplay
@@ -996,6 +1037,62 @@ paths:
           $ref: '#/components/responses/429'
         '503':
           $ref: '#/components/responses/503'
+  /staff/problems/{problemId}/display-confirmations:
+    post:
+      operationId: confirmProblemDisplay
+      summary: Подтвердить первый показ проблемы менеджеру
+      tags: [MVP]
+      x-release: MVP
+      x-stories: [US-14]
+      x-roles: [manager]
+      description: S-01 передает время первого показа проблемы и звукового сигнала. Сервер проверяет ресторан, получателя и согласованность времени с созданием проблемы и своими часами. deliveredAt — минимум проверенных displayedAt по problemId у всех менеджеров. Повтор события не меняет результат. Запоздалое свидетельство более раннего показа уменьшает deliveredAt даже после принятия. Сервер пересчитывает интервал до неизменного acceptedAt. Пришедшее после принятия подтверждение показа до acceptedAt участвует в расчете. Показ после acceptedAt не начинает новый отсчет. До получения допустимого свидетельства интервал не рассчитывается. Команда не принимает проблему и не меняет ее версию для acceptProblem.
+      security:
+      - staffAuth: []
+      parameters:
+      - name: problemId
+        in: path
+        required: true
+        schema: *id003
+      - name: X-Restaurant-Id
+        in: header
+        required: true
+        schema: *id003
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [displayedAt]
+              properties:
+                displayedAt:
+                  type: string
+                  format: date-time
+      responses:
+        '200':
+          description: Исходная проблема с зарегистрированной доставкой
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+        '503':
+          $ref: '#/components/responses/503'
   /staff/problems/{problemId}/accept:
     post:
       operationId: acceptProblem
@@ -1132,7 +1229,7 @@ paths:
       - US-23
       x-roles:
       - manager
-      description: 'MVP: обязательны ресторан+день+точный номер, без широкого списка; альтернативно покупка
+      description: 'MVP: обязательны ресторан+день+точный номер, без широкого списка. Сервер сопоставляет localDate с TradingDay выбранного ресторана; день без записи дает пустой список. Альтернативно покупка
         из проблемы. R1: период [from,to), фильтры оплаты и заказа, курсор. Ресторан проверяется по личным
         правам. История гостя не добавляется.'
       security:
@@ -1142,11 +1239,15 @@ paths:
         in: query
         required: true
         schema: *id003
-      - name: tradingDayId
+      - name: localDate
         in: query
         required: false
-        schema: *id003
+        schema:
+          type: string
+          format: date
+        description: В точном поиске MVP обязательна локальная дата торгового дня ресторана.
       - name: orderNumber
+        description: Полный печатный номер. Строгое строковое совпадение с сохранением ведущих нулей.
         in: query
         required: false
         schema: *id001
@@ -1171,6 +1272,7 @@ paths:
           type: string
           enum:
           - created
+          - not_started
           - processing
           - succeeded
           - declined
@@ -1252,7 +1354,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Purchase'
+                $ref: '#/components/schemas/StaffPurchase'
           headers:
             ETag:
               description: Версия ресурса, если у ресурса есть поле version
@@ -1345,7 +1447,7 @@ paths:
       - manager
       description: Требуются verificationId этой покупки и менеджера, исправный принтер того же ресторана,
         действующий талон и допустимая выдача. После issued/cancelled/no_show или expiresAt запрещено. Код
-        и номер прежние; нет нового задания кухни/платежа. Аудит без кода. Результат копии отражается в getStaffPurchase.documents.ticketPrintStatus;
+        и номер прежние; нет нового задания кухни/платежа. Аудит без кода. Сервер выбирает исправный принтер того же ресторана. Место печати доступно в printerKioskLabel задачи и в getStaffPurchase.lastTicketReprint. Состояние документа отражается в getStaffPurchase.purchase.documents.ticketPrintStatus;
         при unknown читать исходную покупку, не запускать новую копию.
       security:
       - staffAuth: []
@@ -1367,7 +1469,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                $ref: '#/components/schemas/TicketReprintTask'
           headers:
             ETag:
               description: Версия ресурса, если у ресурса есть поле version
@@ -1405,9 +1507,12 @@ paths:
       x-release: MVP
       x-stories:
       - US-15
+      - US-16
       x-roles:
       - manager
-      description: 'MVP: проверенная невозможность выполнения, не просьба гостя. Сохраняются отмена и потребность
+      description: 'MVP: проверенная невозможность выполнения, не просьба гостя. При истечении срока менеджер
+        может подтвердить невозможность, если сверка исключила полную выдачу и выявила нарушенное либо
+        недоказуемое окно по AC-16.1. Пока результат получения неизвестен, отмена по этому основанию недоступна. Сохраняются отмена и потребность
         полного внешнего возврата; комплексу передается запрет новых действий. Уже выданный заказ не переводится
         назад, возврат по подтвержденной проблеме учитывается отдельно.'
       security:
@@ -1533,8 +1638,8 @@ paths:
       x-roles:
       - manager
       description: До начала приготовления допустима просьба гостя; после начала — невозможность выполнения
-        или подтвержденная проблема. Блокирует новые задания и доступ, сохраняет отдельное обязательство возврата.
-        Не объявляет безопасную операцию физически остановленной без подтверждения комплекса.
+        или подтвержденная проблема. Блокирует новые задания и доступ, сохраняет отдельное обязательство возврата после подтверждения основания.
+        Для основания guest_request сервер ожидает условный запрет по исходному jobId. При unknown ответ 202 содержит cancellationCheck=pending. getStaffPurchase возвращает тот же результат сверки. При already_started просьба отклонена, заказ продолжает выполняться. Только stopped_before_start разрешает отмену и обязательство возврата по просьбе. До подтверждения действие start_refund недоступно. Если already_started известно при вызове, ответ 409. При позднем ответе getStaffPurchase возвращает cancellationCheck=already_started.
       security:
       - staffAuth: []
       parameters:
@@ -1583,7 +1688,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Reason'
+              $ref: '#/components/schemas/CancelInput'
   /staff/purchases/{purchaseId}/refunds:
     post:
       operationId: startRefund
@@ -2517,8 +2622,7 @@ paths:
       - US-34
       x-roles:
       - analyst
-      description: Только закрытый день. Повтор для того же дня возвращает исходный пакет с постоянными ID
-        строк. Сбой 1С не блокирует продажи.
+      description: Только закрытый день. Повтор ключа сохраняет exportId и состав. Новый ключ атомарно отбирает только еще не включенные подтвержденные операции. Поздняя продажа входит в дополнительный пакет исходного дня. Возврат относится к дате подтверждения. Если новых строк нет, возвращается последний пакет, при отсутствии пакетов — 204. Уникальность ID операции действует между всеми пакетами. Повтор с исходным ключом при ошибке доставки возобновляет ту же задачу с теми же ID строк. Сбой 1С не блокирует продажи.
       security:
       - staffAuth: []
       parameters:
@@ -2539,6 +2643,14 @@ paths:
             ETag:
               description: Версия ресурса, если у ресурса есть поле version
               schema: *id001
+        '200':
+          description: Новых строк нет, последний пакет дня
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Export'
+        '204':
+          description: Для дня пока нет подтвержденных строк и пакетов
         '400':
           $ref: '#/components/responses/400'
         '401':
@@ -2895,7 +3007,7 @@ components:
           description: Текущая покупка этой сессии, включая незавершенную оплату и документы. Отсутствует,
             если покупка еще не создана. Возвращается только исходному киоску.
       description: После перезапуска киоск получает токен и activePurchaseId через getSession, затем читает
-        getPurchase и связанную payment.attemptId через getPayment. processing/unknown и документы удерживают
+        getPurchase и связанную payment.attemptId через getPayment. Статусы created, processing и unknown, а также незавершенные документы удерживают
         прежнюю сессию. end_session в allowedActions означает, что сервер разрешил очистку; одно принятие
         проблемы не доказывает освобождение терминала.
     SaleState:
@@ -3197,6 +3309,7 @@ components:
           enum:
           - creating
           - active
+          - held
           - committed
           - used
           - released
@@ -3211,8 +3324,7 @@ components:
         expiresBeforePaymentAt:
           type: string
           format: date-time
-          description: 'Срок резерва до запуска платежа: 5 мин. При неизвестном платеже резерв удерживается
-            до сверки.'
+          description: Граница удержания действующего резерва по часам склада. Через 5 мин резерв истекает, если склад еще не подтвердил held для исходной попытки. После удержания таймер не освобождает запас.
     DocumentState:
       type: object
       additionalProperties: false
@@ -3237,6 +3349,7 @@ components:
           - unknown
           - failed
         ticketPrintStatus:
+          description: Состояние задачи печати. Для неявки C-06 отдельно проверяет фактическое время выхода исходного талона в лоток по I-05 или время вручения копии.
           type: string
           enum:
           - pending
@@ -3365,6 +3478,7 @@ components:
           type: string
           minLength: 1
     Purchase:
+      description: Неявка допустима по AC-16.1 с учетом выдачи талона и фактического интервала доступа. При неизвестном исходе заказ остается на разборе. Подтвержденный до срока полный цикл дает issued.
       type: object
       additionalProperties: false
       required:
@@ -3432,6 +3546,11 @@ components:
             - cancel_order
             - start_refund
           description: Только действия текущего субъекта. Гость никогда не получает команды сотрудника.
+        cancellationCheck:
+          type: string
+          enum: [pending, stopped_before_start, already_started]
+          x-release: R1
+          description: Результат условного запрета по просьбе гостя. Отсутствует, если запроса не было.
         loyaltyResult:
           type: object
           x-release: R1
@@ -3451,6 +3570,18 @@ components:
               - confirmed
               - unknown
               - failed
+    StaffPurchase:
+      type: object
+      additionalProperties: false
+      required: [purchase, kioskId, kioskLabel]
+      properties:
+        purchase:
+          $ref: '#/components/schemas/Purchase'
+        kioskId: *id003
+        kioskLabel: *id001
+        lastTicketReprint:
+          $ref: '#/components/schemas/TicketReprintTask'
+      description: Исходная покупка и киоск для проверки менеджером в своем ресторане.
     PrepareInput:
       type: object
       additionalProperties: false
@@ -3539,6 +3670,25 @@ components:
       description: Только публичная проекция. В ready обязательны assignmentId и cellNumber. purchaseId, код
         талона, состав и оплата отсутствуют. При fresh=false оба списка пусты; недоступность нельзя выдавать
         за свежий пустой результат.
+    BoardVisibilityInterval:
+      type: object
+      additionalProperties: false
+      required: [assignmentId, projectionVersion, visibleFrom, visibleUntil, clockErrorMs]
+      properties:
+        assignmentId: *id003
+        projectionVersion: *id004
+        visibleFrom:
+          type: string
+          format: date-time
+          description: Начало непрерывного показа номера и ячейки в этой версии.
+        visibleUntil:
+          type: string
+          format: date-time
+          description: Конец подтвержденного интервала. После сбоя учитывается лишь последний достоверный момент.
+        clockErrorMs:
+          type: integer
+          minimum: 0
+          description: Измеренная верхняя граница абсолютной ошибки часов для интервала, в миллисекундах.
     DisplayAck:
       type: object
       additionalProperties: false
@@ -3608,10 +3758,21 @@ components:
       - status
       properties:
         problemId: *id003
-        purchaseId: *id003
+        purchaseId:
+          type: string
+          format: uuid
+          description: Обязателен для проблемы оплаты или документов. Менеджер открывает исходную покупку по этой ссылке.
+        orderNumber:
+          type: string
+          description: Печатный номер, если заказ уже оплачен. Доступен менеджеру в списке проблем.
+        kioskLabel:
+          type: string
+          description: Киоск исходной покупки. Доступен менеджеру для проблем оплаты и документов.
         cellId: *id003
         stage: *id001
-        reason: *id001
+        reason:
+          type: string
+          description: Для проблемы выдачи содержит основание разбора и текущий результат сверки талона, показа, физического доступа и получения до срока.
         createdAt:
           type: string
           format: date-time
@@ -3619,7 +3780,7 @@ components:
         deliveredAt:
           type: string
           format: date-time
-          description: Время доставки уведомления ответственному сотруднику; от него измеряется срок принятия
+          description: Самое раннее проверенное время показа проблемы менеджеру среди всех получателей. До получения свидетельства доставки поле отсутствует. От него измеряется срок принятия
             1 мин.
         acceptedAt:
           type: string
@@ -3648,6 +3809,14 @@ components:
       - result
       properties:
         result: *id001
+        printOperationId:
+          type: string
+          format: uuid
+          description: ID подтвержденной задачи печати копии этой покупки. Обязателен вместе с ticketHandedAt при вручении.
+        ticketHandedAt:
+          type: string
+          format: date-time
+          description: Время фактической передачи копии гостю. Менеджер указывает при закрытии проблемы талона после подтвержденной печати. Сервер проверяет связь с printOperationId и порядок времени относительно печати. Повтор исходной команды сохраняет время. При возврате по невозможности выдачи поле отсутствует.
       description: Запись результата не меняет подтвержденные состояния оплаты и оборудования. Сервер отклоняет
         закрытие при незавершенных обязательствах.
     Verification:
@@ -3680,15 +3849,37 @@ components:
           type: string
           format: date-time
           description: Время сохранения проверки покупки менеджером.
+    CancelInput:
+      type: object
+      additionalProperties: false
+      required: [basis, reason]
+      properties:
+        basis:
+          type: string
+          enum: [guest_request, impossible, confirmed_problem]
+        reason: *id001
+      description: Сервер проверяет основание и факты по исходной покупке.
+    TicketReprintTask:
+      type: object
+      additionalProperties: false
+      required: [operationId, status, printerDeviceId, printerKioskLabel]
+      properties:
+        operationId: *id003
+        status:
+          type: string
+          enum: [pending, processing, confirmed, unknown, failed]
+        resourceId: *id003
+        printerDeviceId: *id003
+        printerKioskLabel: *id001
+      description: Идентификатор и обозначение киоска печати фиксируются при создании задачи. Повтор сохраняет тот же принтер. Код талона в ответ не включается.
     Reprint:
       type: object
       additionalProperties: false
       required:
       - verificationId
-      - printerDeviceId
       properties:
         verificationId: *id003
-        printerDeviceId: *id003
+      description: Сервер выбирает исправный принтер киоска этого ресторана и сохраняет его ID в задаче до отправки. При отсутствии принтера задача печати не запускается.
     Task:
       type: object
       additionalProperties: false
@@ -4230,7 +4421,7 @@ components:
           items:
             type: object
             additionalProperties: false
-            required: [tradingDayId, localDate, closed]
+            required: [tradingDayId, localDate, closed, unbatchedOperationCount]
             properties:
               tradingDayId: *id003
               localDate:
@@ -4238,6 +4429,14 @@ components:
                 format: date
               closed:
                 type: boolean
+              unbatchedOperationCount:
+                type: integer
+                minimum: 0
+                description: Подтвержденные операции этого дня, еще не включенные ни в один пакет.
+              latestExportId:
+                type: string
+                format: uuid
+                description: Последний пакет выбранного дня. До первой выгрузки отсутствует.
         paidOrderCount:
           type: integer
           minimum: 0
@@ -4278,6 +4477,8 @@ components:
           - failed
         operationIds:
           type: array
+          uniqueItems: true
+          description: Постоянные ID строк этого неизменяемого пакета. Между пакетами одна операция включается один раз.
           items: *id003
         confirmedAt:
           type: string

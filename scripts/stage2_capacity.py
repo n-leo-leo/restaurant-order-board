@@ -49,13 +49,13 @@ def storage(year, daily):
                 backups_gib=round(backups / GIB, 2))
 
 
-def calculate():
+def calculate(active_manager_screens=1):
     network = []
     for year, n in ENDPOINTS.items():
-        # Per restaurant: 4 kiosk menu polls + 1 board, each twice per second.
+        # Per restaurant: 4 kiosks, one board and active staff screens poll twice per second.
         # 20 further API calls and 30 DB transactions per order, 10 events/order.
         peak = n * 200 / 3600
-        polls = n * (4 + 1) * 2
+        polls = n * (4 + 1 + active_manager_screens) * 2
         network.append(dict(year=year, restaurants=n, kiosks=n * 4,
                             forecast_day=n * DAILY_FORECAST,
                             required_day=n * DAILY_REQUIRED,
@@ -63,6 +63,7 @@ def calculate():
                             api_sec=round(polls + 20 * peak, 2),
                             db_tx_sec=round(polls + 30 * peak, 2),
                             burst_orders_sec=n * 4 / 10,
+                            burst_api_sec=round(polls + 20 * n * 4 / 10, 2),
                             burst_db_tx_sec=round(polls + 30 * n * 4 / 10, 2),
                             events_sec=round(10 * peak, 2)))
     return dict(network=network, storage={str(y): {
@@ -82,7 +83,9 @@ if __name__ == "__main__":
     assert accumulated_orders(1, 400) == 34 * 365 * 400
     assert accumulated_orders(5, 400) == 434 * 365 * 400
     assert result["network"][-1]["kiosks"] == 520
-    assert result["network"][-1]["api_sec"] > 1300
+    assert result["network"][-1]["api_sec"] == 1704.44
+    assert result["network"][-1]["burst_db_tx_sec"] == 3120
+    assert calculate(active_manager_screens=0)["network"][-1]["api_sec"] == 1444.44
     for year in (1, 3, 5):
         assert accumulated_orders(year, 2000) == 5 * accumulated_orders(year, 400)
     print(json.dumps(result, ensure_ascii=False, indent=2))

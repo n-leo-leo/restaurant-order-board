@@ -43,7 +43,7 @@
 
 ??? info "K-04: альтернативные состояния"
 
-    [Проверка неизвестного платежа](../assets/prototype/screens/k-04-unknown.png) · [Подтвержденный отказ](../assets/prototype/screens/k-04-declined.png).
+    [Проверка резерва перед оплатой](../assets/prototype/screens/k-04-holding.png) · [Срок резерва истек до оплаты](../assets/prototype/screens/k-04-holdExpired.png) · [Проверка неизвестного платежа](../assets/prototype/screens/k-04-unknown.png) · [Подтвержденный отказ](../assets/prototype/screens/k-04-declined.png).
 
 ??? info "K-05: альтернативные состояния"
 
@@ -75,7 +75,7 @@
 
 ??? info "B-02: альтернативные состояния"
 
-    [Дверца открыта](../assets/prototype/screens/b-02-open.png) · [Частичное получение](../assets/prototype/screens/b-02-partial.png) · [Выдача подтверждена](../assets/prototype/screens/b-02-issued.png) · [Срок истек](../assets/prototype/screens/b-02-expired.png) · [Неверный талон](../assets/prototype/screens/b-02-invalid.png) · [Неисправность контроля](../assets/prototype/screens/b-02-fault.png).
+    [Дверца открыта](../assets/prototype/screens/b-02-open.png) · [Частичное получение](../assets/prototype/screens/b-02-partial.png) · [Выдача подтверждена](../assets/prototype/screens/b-02-issued.png) · [Срок истек](../assets/prototype/screens/b-02-expired.png) · [Доступ к заказу не подтвержден](../assets/prototype/screens/b-02-accessUnconfirmed.png) · [Срок истек после сбоя выдачи](../assets/prototype/screens/b-02-shortWindow.png) · [Неверный талон](../assets/prototype/screens/b-02-invalid.png) · [Неисправность контроля](../assets/prototype/screens/b-02-fault.png).
 
 ## Минимальный экран — MVP {#staff}
 
@@ -90,7 +90,7 @@
 
 ??? info "S-01: альтернативные состояния"
 
-    [Проблема принята](../assets/prototype/screens/s-01-accepted.png) · [Нет проблем](../assets/prototype/screens/s-01-empty.png) · [Загрузка](../assets/prototype/screens/s-01-loading.png) · [Ошибка связи](../assets/prototype/screens/s-01-error.png).
+    [Проблема принята](../assets/prototype/screens/s-01-accepted.png) · [Уточнено время первого показа](../assets/prototype/screens/s-01-deliveryReconciled.png) · [Нет проблем](../assets/prototype/screens/s-01-empty.png) · [Загрузка](../assets/prototype/screens/s-01-loading.png) · [Ошибка связи](../assets/prototype/screens/s-01-error.png).
 
 | **S-02 · Покупка и помощь** | **S-03 · Обслуживание ячеек** |
 |---|---|
@@ -147,7 +147,7 @@
 
 ??? info "R-04: альтернативные состояния"
 
-    [Карточка заказа](../assets/prototype/screens/r-04-detail.png) · [Подтверждение отмены](../assets/prototype/screens/r-04-cancel.png) · [Заказ отменен; возврат требуется](../assets/prototype/screens/r-04-cancelled.png) · [Полный возврат](../assets/prototype/screens/r-04-refund.png) · [Возврат проверяется](../assets/prototype/screens/r-04-refundPending.png) · [Деньги возвращены, чек на сверке](../assets/prototype/screens/r-04-moneyConfirmed.png) · [Деньги и чек подтверждены](../assets/prototype/screens/r-04-refundConfirmed.png) · [Уведомления](../assets/prototype/screens/r-04-notifications.png) · [Заказы не найдены](../assets/prototype/screens/r-04-empty.png).
+    [Карточка заказа](../assets/prototype/screens/r-04-detail.png) · [Подтверждение отмены](../assets/prototype/screens/r-04-cancel.png) · [Кухня проверяет запрет](../assets/prototype/screens/r-04-cancelPending.png) · [Приготовление уже началось](../assets/prototype/screens/r-04-cancelTooLate.png) · [Заказ отменен; возврат требуется](../assets/prototype/screens/r-04-cancelled.png) · [Полный возврат](../assets/prototype/screens/r-04-refund.png) · [Возврат проверяется](../assets/prototype/screens/r-04-refundPending.png) · [Деньги возвращены, чек на сверке](../assets/prototype/screens/r-04-moneyConfirmed.png) · [Деньги и чек подтверждены](../assets/prototype/screens/r-04-refundConfirmed.png) · [Уведомления](../assets/prototype/screens/r-04-notifications.png) · [Заказы не найдены](../assets/prototype/screens/r-04-empty.png).
 
 ??? info "R-05: альтернативные состояния"
 
@@ -173,11 +173,11 @@
 
 ??? info "R-08: альтернативные состояния"
 
-    [Пакет отправляется](../assets/prototype/screens/r-08-exportPending.png) · [Прием подтвержден](../assets/prototype/screens/r-08-exported.png) · [1С недоступна](../assets/prototype/screens/r-08-exportError.png) · [Нет операций](../assets/prototype/screens/r-08-empty.png).
+    [Пакет отправляется](../assets/prototype/screens/r-08-exportPending.png) · [Прием подтвержден](../assets/prototype/screens/r-08-exported.png) · [1С недоступна](../assets/prototype/screens/r-08-exportError.png) · [Поздняя оплата закрытого дня](../assets/prototype/screens/r-08-lateSale.png) · [Дополнительный пакет отправляется](../assets/prototype/screens/r-08-supplementPending.png) · [Дополнительный пакет на повторе](../assets/prototype/screens/r-08-supplementError.png) · [Оба пакета приняты](../assets/prototype/screens/r-08-supplementDone.png) · [Нет операций](../assets/prototype/screens/r-08-empty.png).
 
 ## Сценарии для просмотра
 
-1. **Покупка картой:** K-01 → K-02 → K-03. В корзине выбрать тип обслуживания, проверить расчет и подтвердить оплату. В K-04 выбрать результат терминала на панели демонстрации. Успех ведет в K-05, отказ возвращает к проверке заказа, неизвестный результат оставляет экран сверки.
+1. **Покупка картой:** K-01 → K-02 → K-03. В корзине выбрать тип обслуживания, проверить расчет и подтвердить оплату. В K-04 выбрать «Удержание подтверждено», затем результат терминала на панели демонстрации. Успех ведет в K-05, отказ возвращает к проверке заказа, неизвестный результат оставляет экран сверки.
 2. **Сбой талона:** K-05 → ошибка принтера → K-06. В S-01 принять проблему, в S-02 проверить покупку и повторить печать прежнего талона. Код талона на экране сотрудника не показывается.
 3. **Невозможность выполнения:** S-02 → причина и подтверждение отмены → регистрация внешнего ID возврата. Заказ отменен, деньги еще проверяются. Подтверждение результата моделируется отдельно. В первом релизе запуск возврата доступен в R-04.
 4. **Выдача:** B-01 показывает две публичные колонки. В B-02 панель демонстрации моделирует действительный талон, частичный остаток, подтвержденный полный цикл, истечение срока и неисправность. Это сообщения внешнего комплекса; состав его оборудования остается допущением A-02.

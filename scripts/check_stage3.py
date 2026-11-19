@@ -89,12 +89,49 @@ assert ops['getSession']['security'] == [{'deviceAuth': []}]
 assert 'end_session' in schemas['Session']['properties']['allowedActions']['items']['enum']
 assert schemas['DocumentState']['properties']['problemStatus']['enum'] == ['new', 'accepted', 'resolved']
 
+# Keep the manager lookup, reprint and display acknowledgement usable by their screens.
+search = {param['name']: param for param in ops['findPurchases']['parameters'] if 'name' in param}
+assert search['localDate']['schema']['format'] == 'date'
+assert search['orderNumber']['schema']['type'] == 'string'
+staff_detail = ops['getStaffPurchase']['responses']['200']['content']['application/json']['schema']
+assert staff_detail['$ref'] == '#/components/schemas/StaffPurchase'
+assert {'purchase', 'kioskId', 'kioskLabel'} <= set(resolve(staff_detail['$ref'])['required'])
+assert schemas['Reprint']['required'] == ['verificationId']
+ack = ops['confirmProblemDisplay']
+assert ack['security'] == [{'staffAuth': []}] and ack['x-roles'] == ['manager']
+assert ack['x-release'] == 'MVP'
+ack_input = ack['requestBody']['content']['application/json']['schema']
+assert 'displayedAt' in ack_input['required'] and ack_input['properties']['displayedAt']['format'] == 'date-time'
+assert {'created', 'not_started', 'processing', 'unknown'} <= set(schemas['Payment']['properties']['status']['enum'])
+assert {'held', 'expired'} <= set(schemas['Reservation']['properties']['status']['enum'])
+
+# The manager can recover the actual destination of a reprint and the result of a conditional stop.
+reprint_result = ops['reprintTicket']['responses']['202']['content']['application/json']['schema']
+assert reprint_result == schemas['StaffPurchase']['properties']['lastTicketReprint']
+assert {'operationId', 'printerDeviceId', 'printerKioskLabel'} <= set(resolve(reprint_result['$ref'])['required'])
+visibility = ops['recordBoardVisibility']
+assert visibility['security'] == [{'deviceAuth': []}] and visibility['x-roles'] == ['board']
+interval = resolve(visibility['requestBody']['content']['application/json']['schema']['$ref'])
+assert set(interval['required']) == {'assignmentId', 'projectionVersion', 'visibleFrom', 'visibleUntil', 'clockErrorMs'}
+assert interval['properties']['clockErrorMs']['minimum'] == 0
+assert 'ticketHandedAt' in schemas['Resolution']['properties']
+assert 'lastTicketReprint' not in schemas['Purchase']['properties']
+cancel_input = ops['cancelOrder']['requestBody']['content']['application/json']['schema']
+assert 'basis' in resolve(cancel_input['$ref'])['required']
+check = schemas['Purchase']['properties']['cancellationCheck']
+assert check['x-release'] == 'R1' and set(check['enum']) == {'pending', 'already_started', 'stopped_before_start'}
+assert {'200', '202', '204'} <= ops['createExport']['responses'].keys()
+assert schemas['Export']['properties']['operationIds']['uniqueItems']
+assert 'created' in ops['endSession']['description']
+
 # Screen contracts used before starting payment and exporting the selected trading day.
 assert 'availablePaymentMethods' in schemas['Session']['required']
 assert schemas['Session']['properties']['availablePaymentMethods']['items']['enum'] == ['card', 'cash']
 assert 'tradingDays' in schemas['Report']['required']
 days = schemas['Report']['properties']['tradingDays']['items']
-assert set(days['required']) == {'tradingDayId', 'localDate', 'closed'}
+assert set(days['required']) == {'tradingDayId', 'localDate', 'closed', 'unbatchedOperationCount'}
+assert days['properties']['unbatchedOperationCount']['minimum'] == 0
+assert days['properties']['latestExportId']['format'] == 'uuid'
 assert days['properties']['tradingDayId'] == schemas['ExportInput']['properties']['tradingDayId']
 supply = schemas['Production']['properties']['robots']['items']['properties']['supplies']['items']
 percent = supply['properties']['remainingPercent']
@@ -183,7 +220,11 @@ for file, pattern in baseline_files.items():
         for identifier, cells in current.items():
             # Source citations can be edited. Story text, release, business requirements,
             # NFR category and measurable conditions retain their reviewed values.
-            if identifier == 'НФТ-11':
+            if identifier == 'НФТ-20':
+                expected = original[identifier].copy()
+                expected[2] = expected[2].replace('После удаления из ячейки заказа, который гость не забрал, ячейка может освободиться, но заказ остается завершенным по неявке.', 'После удаления еды и контроля ячейку можно освободить. Исход заказа определяется по событиям выдачи и условиям AC-16.1.')
+                assert cells[:-1] == expected[:-1], identifier
+            elif identifier == 'НФТ-11':
                 assert cells[:2] == original[identifier][:2]
                 assert cells[2] == (
                     'Не менее половины участников завершают заказ за 3 мин или быстрее. Время считается от начала '
@@ -206,6 +247,26 @@ for file, pattern in baseline_files.items():
         approved = old.replace('Не менее половины заказов оформляются за 3 минуты или быстрее.',
                                'В проверке с 10 участниками не менее 5 завершают заказ за 3 минуты или быстрее. '
                                'В знаменателе остаются все 10, в том числе участники с банковским сбоем или незавершенным заказом.')
+        # Only the reviewed hold, pickup and printer rules may differ from the baseline.
+        for previous, revised in [
+            ('Еда доступна 10 минут после первого появления номера в «Готов».', 'Срок хранения истекает через 10 минут после первого показа номера в «Готов».'),
+            ('До запуска его и условия хранения проверяет технолог.', 'До запуска технолог проверяет срок и условия хранения. Допуск проверяют на оборудовании и согласуют с рестораном.'),
+            ('Срок 10 минут принят как допущение.', 'Срок 10 минут и допуск 1 с на первичное включение доступа приняты как допущения.'),
+            (
+                'Заказ завершается по неявке. Автоматический возврат и повторное приготовление не выполняются.',
+                'Неявка без автоматического возврата и повторного приготовления допустима при подтвержденных условиях AC-16.1. Талон выдан к первому показу, номер виден до конца срока, исправный доступ включен не позднее чем через 1 с и сохраняется до конца срока. Полной выдачи не было. При нарушении окна и подтвержденном неполучении применяется A-12.',
+            ),
+            (
+                'Резерв до запуска платежа действует 5 мин.',
+                'До удержания резерв действует 5 мин. До вызова банка склад подтверждает удержание за исходной попыткой оплаты. Если ответ потерян, приложение сверяет ту же операцию.',
+            ),
+            (
+                'Менеджер повторно печатает талон через исправный принтер киоска.',
+                'Менеджер запрашивает повторную печать. Сервер выбирает исправный принтер киоска того же ресторана и сохраняет его идентификатор и обозначение киоска в задаче печати. На S-02 менеджер видит место печати и фиксирует вручение копии гостю.',
+            ),
+        ]:
+            assert approved.count(previous) == 1
+            approved = approved.replace(previous, revised)
         assert now == approved, ('Source assumption changed', file)
 assert not (PROJECT / 'documentation/05_api').exists()
 

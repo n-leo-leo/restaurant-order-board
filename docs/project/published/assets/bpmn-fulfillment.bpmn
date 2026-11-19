@@ -42,7 +42,7 @@
       <bpmn:outgoing>Flow_bpmn-fulfillment_11</bpmn:outgoing>
     </bpmn:task>
     <bpmn:eventBasedGateway id="p_wait" name="Ожидать событие выдачи">
-      <bpmn:incoming>Flow_bpmn-fulfillment_11</bpmn:incoming>
+      <bpmn:incoming>p_applied_yes</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_12</bpmn:outgoing>
       <bpmn:outgoing>Flow_bpmn-fulfillment_13</bpmn:outgoing>
       <bpmn:outgoing>Flow_bpmn-fulfillment_14</bpmn:outgoing>
@@ -72,12 +72,12 @@
       <bpmn:incoming>Flow_bpmn-fulfillment_15</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_16</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="p_expirenotify" name="Система: снять номер, блокировать выдачу, уведомить сотрудника">
+    <bpmn:task id="p_expirenotify" name="Система: закрыть доступ, снять номер и сверить цикл выдачи">
       <bpmn:incoming>Flow_bpmn-fulfillment_18</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_19</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="p_clean" name="Сотрудник: убрать еду; система: подтвердить пустоту (A-04)">
-      <bpmn:incoming>Flow_bpmn-fulfillment_19</bpmn:incoming>
+      <bpmn:incoming>p_absent_yes</bpmn:incoming>
       <bpmn:outgoing>Flow_bpmn-fulfillment_20</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="p_verify" name="Система: освободить исправную пустую ячейку">
@@ -91,6 +91,8 @@
       <bpmn:incoming>Flow_bpmn-fulfillment_20</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:task id="p_problem" name="Система: «Проблема», скрыть номер, уведомить менеджера">
+      <bpmn:incoming>p_absent_no</bpmn:incoming>
+      <bpmn:incoming>p_applied_no</bpmn:incoming>
       <bpmn:incoming>Flow_bpmn-fulfillment_7</bpmn:incoming>
       <bpmn:incoming>Flow_bpmn-fulfillment_10</bpmn:incoming>
       <bpmn:incoming>Flow_bpmn-fulfillment_21</bpmn:incoming>
@@ -103,6 +105,21 @@
     <bpmn:endEvent id="p_manualend" name="Продолжение по регламенту">
       <bpmn:incoming>Flow_bpmn-fulfillment_23</bpmn:incoming>
     </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="p_applied" name="Доступ подтвержден?" gatewayDirection="Diverging">
+      <bpmn:incoming>Flow_bpmn-fulfillment_11</bpmn:incoming>
+      <bpmn:outgoing>p_applied_yes</bpmn:outgoing>
+      <bpmn:outgoing>p_applied_no</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="p_applied_yes" sourceRef="p_applied" targetRef="p_wait" name="Да" />
+    <bpmn:sequenceFlow id="p_applied_no" sourceRef="p_applied" targetRef="p_problem" name="Нет или неизвестно" />
+    <bpmn:exclusiveGateway id="p_absent" name="Неявка по AC-16.1?" gatewayDirection="Diverging">
+      <bpmn:documentation>После сверки полного цикла неявка допустима только при выполнении условий AC-16.1 по талону и непрерывному доступу до срока. Иначе требуется разбор.</bpmn:documentation>
+      <bpmn:incoming>Flow_bpmn-fulfillment_19</bpmn:incoming>
+      <bpmn:outgoing>p_absent_yes</bpmn:outgoing>
+      <bpmn:outgoing>p_absent_no</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="p_absent_yes" sourceRef="p_absent" targetRef="p_clean" name="Да" />
+    <bpmn:sequenceFlow id="p_absent_no" sourceRef="p_absent" targetRef="p_problem" name="Нет или неизвестно" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_0" sourceRef="p_start" targetRef="p_send" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_1" sourceRef="p_send" targetRef="p_cook" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_2" sourceRef="p_cook" targetRef="p_ok" />
@@ -114,7 +131,7 @@
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_8" sourceRef="p_cell" targetRef="p_cellok" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_9" sourceRef="p_cellok" targetRef="p_ready" name="Да" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_10" sourceRef="p_cellok" targetRef="p_problem" name="Нет" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_11" sourceRef="p_ready" targetRef="p_wait" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_11" sourceRef="p_ready" targetRef="p_applied" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_12" sourceRef="p_wait" targetRef="p_open" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_13" sourceRef="p_wait" targetRef="p_timer" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_14" sourceRef="p_wait" targetRef="p_failure" />
@@ -122,7 +139,7 @@
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_16" sourceRef="p_issued" targetRef="p_verify" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_17" sourceRef="p_verify" targetRef="p_end" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_18" sourceRef="p_timer" targetRef="p_expirenotify" />
-    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_19" sourceRef="p_expirenotify" targetRef="p_clean" />
+    <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_19" sourceRef="p_expirenotify" targetRef="p_absent" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_20" sourceRef="p_clean" targetRef="p_expired" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_21" sourceRef="p_failure" targetRef="p_problem" />
     <bpmn:sequenceFlow id="Flow_bpmn-fulfillment_22" sourceRef="p_problem" targetRef="p_manager" />
@@ -195,10 +212,25 @@
           <dc:Bounds x="300" y="1051" width="170" height="22" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_11" bpmnElement="Flow_bpmn-fulfillment_11">
-        <di:waypoint x="260.0" y="1276" />
-        <di:waypoint x="260.0" y="1390" />
+      <bpmndi:BPMNEdge id="Flow_bpmn-fulfillment_11_di" bpmnElement="Flow_bpmn-fulfillment_11">
+        <di:waypoint x="260" y="1276" />
+        <di:waypoint x="260" y="1291" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="p_applied_yes_di" bpmnElement="p_applied_yes">
+        <di:waypoint x="260" y="1331" />
+        <di:waypoint x="260" y="1390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="p_applied_no_di" bpmnElement="p_applied_no">
+        <di:waypoint x="280" y="1311" />
+        <di:waypoint x="930" y="1311" />
+        <di:waypoint x="930" y="1114" />
+        <di:waypoint x="1100" y="1114" />
+        <di:waypoint x="1100" y="1086" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="p_applied_di" bpmnElement="p_applied" isMarkerVisible="true">
+        <dc:Bounds x="240" y="1291" width="40" height="40" />
+        <bpmndi:BPMNLabel><dc:Bounds x="48" y="1301" width="185" height="20" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_12" bpmnElement="Flow_bpmn-fulfillment_12">
         <di:waypoint x="260.0" y="1454" />
         <di:waypoint x="260.0" y="1560" />
@@ -230,10 +262,24 @@
         <di:waypoint x="730.0" y="1604" />
         <di:waypoint x="730.0" y="1730" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_19" bpmnElement="Flow_bpmn-fulfillment_19">
-        <di:waypoint x="730.0" y="1806" />
-        <di:waypoint x="730.0" y="1900" />
+      <bpmndi:BPMNEdge id="Flow_bpmn-fulfillment_19_di" bpmnElement="Flow_bpmn-fulfillment_19">
+        <di:waypoint x="730" y="1806" />
+        <di:waypoint x="730" y="1829" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="p_absent_yes_di" bpmnElement="p_absent_yes">
+        <di:waypoint x="730" y="1869" />
+        <di:waypoint x="730" y="1900" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="p_absent_no_di" bpmnElement="p_absent_no">
+        <di:waypoint x="750" y="1849" />
+        <di:waypoint x="1460" y="1849" />
+        <di:waypoint x="1460" y="1030" />
+        <di:waypoint x="1330" y="1030" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="p_absent_di" bpmnElement="p_absent" isMarkerVisible="true">
+        <dc:Bounds x="710" y="1829" width="40" height="40" />
+        <bpmndi:BPMNLabel><dc:Bounds x="518" y="1839" width="185" height="20" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="bpmn-fulfillment_edge_20" bpmnElement="Flow_bpmn-fulfillment_20">
         <di:waypoint x="730.0" y="1976" />
         <di:waypoint x="730.0" y="2100" />
